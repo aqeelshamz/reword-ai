@@ -7,11 +7,27 @@ import Document from "../models/Document.js";
 
 const router = express.Router();
 
-router.get("/", validate, async (req, res) => {
-    res.send(await Document.find({ userId: req.user._id }));
+router.get("/list", validate, async (req, res) => {
+    const documents = (await Document.find({ userId: req.user._id })).reverse();
+    res.send({ user: { name: req.user.name, email: req.user.email }, documents: documents });
 });
 
-router.post("/", validate, async (req, res) => {
+router.post("/by-id", validate, async (req, res) => {
+    const schema = joi.object({
+        documentId: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+        return res.send(await Document.findById(data.documentId));
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).send(err);
+    }
+});
+
+router.post("/create", validate, async (req, res) => {
     const schema = joi.object({
         title: joi.string().required(),
     });
@@ -29,6 +45,7 @@ router.post("/", validate, async (req, res) => {
         return res.send(newDocument);
     }
     catch (err) {
+        console.log(err)
         return res.status(500).send(err);
     }
 });
@@ -37,12 +54,15 @@ router.post("/save", validate, async (req, res) => {
     const schema = joi.object({
         documentId: joi.string().required(),
         content: joi.string().required().allow(""),
+        tone: joi.number().required().min(0).max(4),
+        length: joi.number().required().min(0).max(2),
+        rewrites: joi.number().required().min(1).max(10),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        await Document.updateOne({ _id: data.documentId }, { content: data.content });
+        await Document.updateOne({ _id: data.documentId }, { content: data.content, settings: { tone: data.tone, length: data.length, rewrites: data.rewrites } });
 
         return res.send("Saved");
     }
@@ -51,7 +71,7 @@ router.post("/save", validate, async (req, res) => {
     }
 });
 
-router.post("/rename", validate, async (req, res) => {
+router.post("/edit", validate, async (req, res) => {
     const schema = joi.object({
         documentId: joi.string().required(),
         title: joi.string().required(),
