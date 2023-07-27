@@ -2,7 +2,7 @@
 import serverURL from "@/utils/utils";
 import axios from "axios";
 import { useRef, useState, useEffect } from "react";
-import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage } from "react-icons/fi";
+import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage, FiType, FiFileText, FiEdit, FiTrash, FiMenu } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,8 +15,157 @@ export default function Home() {
   const [rewrites, setRewrites] = useState<string[]>([""]);
   const rewritesModalRef = useRef<null | HTMLLabelElement>(null);
   const moreModalRef = useRef<null | HTMLLabelElement>(null);
+  const newDocumentModalRef = useRef<null | HTMLLabelElement>(null);
   const [moreMenuOpen, setMoreMenuOpen] = useState<boolean>(false);
   const [generateTextWithAIPrompt, setGenerateTextWithAIPrompt] = useState<string>("");
+  const [user, setUser] = useState<any>({});
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+
+  //Documents
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [selectedDocument, setSelectedDocument] = useState<number>(-1);
+  const [newDocumentTitle, setNewDocumentTitle] = useState<string>("");
+  const [loadingDocument, setLoadingDocument] = useState<boolean>(false);
+  const [creatingDocument, setCreatingDocument] = useState<boolean>(false);
+
+  const getDocument = async () => {
+    if (selectedDocument === -1 || !documents[selectedDocument]?._id) return;
+
+    setLoadingDocument(true);
+    const config = {
+      method: "POST",
+      url: `${serverURL}/documents/by-id`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": `application/json`,
+      },
+      data: {
+        documentId: documents[selectedDocument]?._id
+      }
+    };
+
+    axios(config)
+      .then((response) => {
+        setLoadingDocument(false);
+        setText(response.data.content ?? "");
+        setTone(response.data.settings.tone ?? 0);
+        setLength(response.data.settings.length ?? 1);
+        setRewritesCount(response.data.settings.rewrites ?? 1);
+      })
+      .catch((error) => {
+        setLoadingDocument(false);
+      });
+  }
+
+  const getDocuments = async () => {
+    const config = {
+      method: "GET",
+      url: `${serverURL}/documents/list`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setDocuments(response.data.documents);
+        setUser(response.data.user);
+        if (response.data.documents.length > 0) {
+          setSelectedDocument(0);
+        }
+        else {
+          setSelectedDocument(-1);
+        }
+      })
+      .catch((error) => {
+        toast.error("Failed to fetch documents");
+      });
+  }
+
+  const createDocument = async () => {
+    if (!newDocumentTitle || creatingDocument || loadingDocument) return;
+
+    setCreatingDocument(true);
+    const config = {
+      method: "POST",
+      url: `${serverURL}/documents/create`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": `application/json`,
+      },
+      data: {
+        title: newDocumentTitle
+      }
+    };
+
+    axios(config)
+      .then((response) => {
+        toast.success("Document created!");
+        getDocuments();
+        setNewDocumentTitle("");
+        setText("");
+        setTone(0);
+        setLength(1);
+        setRewritesCount(1);
+        setCreatingDocument(false);
+        setLoadingDocument(false);
+        setSelectedDocument(0);
+      })
+      .catch((error) => {
+        setNewDocumentTitle("");
+        toast.error("Failed to create document!");
+        setCreatingDocument(false);
+        setLoadingDocument(false);
+      });
+  }
+
+  const editDocument = async () => {
+    const config = {
+      method: "POST",
+      url: `${serverURL}/documents/edit`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": `application/json`,
+      },
+      data: {
+        documentId: documents[selectedDocument]?._id,
+        title: newDocumentTitle
+      }
+    };
+
+    axios(config)
+      .then((response) => {
+        getDocuments();
+        setNewDocumentTitle("");
+        toast.success("Document edited!");
+      })
+      .catch((error) => {
+        toast.error("Failed to edit document");
+      });
+  }
+
+  const deleteDocument = async () => {
+    const config = {
+      method: "POST",
+      url: `${serverURL}/documents/delete`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": `application/json`,
+      },
+      data: {
+        documentId: documents[selectedDocument]?._id
+      }
+    };
+
+    axios(config)
+      .then((response) => {
+        getDocuments();
+        toast.success("Document deleted!");
+      })
+      .catch((error) => {
+        toast.error("Failed to delete document");
+      });
+  }
 
   const [theme, setTheme] = useState<null | any | string>(
     "light"
@@ -117,7 +266,22 @@ export default function Home() {
       });
   }
 
+  const handleKeyDown = (event: any) => {
+    if (event.altKey && event.key === "n") {
+      console.log("Alt+N");
+      setNewDocumentTitle("");
+      newDocumentModalRef.current?.click();
+    }
+
+    if (event.key === "Escape") {
+      setSelectedDocument(-1);
+    }
+  };
+
   useEffect(() => {
+    getDocuments();
+
+    document.addEventListener("keydown", handleKeyDown);
     if (typeof window !== 'undefined') {
       setTheme(localStorage.getItem("theme") ? localStorage.getItem("theme") : "light");
       if (!localStorage.getItem("token")) {
@@ -133,16 +297,80 @@ export default function Home() {
     document.querySelector("html")!.setAttribute("data-theme", localTheme);
   }, [theme]);
 
+  const autoSaveDocument = () => {
+    if (!documents[selectedDocument]?._id) return;
+
+    const config = {
+      method: "POST",
+      url: `${serverURL}/documents/save`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": `application/json`,
+      },
+      data: {
+        documentId: documents[selectedDocument]?._id,
+        content: text,
+        tone: tone,
+        length: length,
+        rewrites: rewritesCount
+      }
+    };
+
+    axios(config);
+  }
+
+  //Autosave document
+  useEffect(() => {
+    if (selectedDocument === -1) return;
+    const timer = setTimeout(() => {
+      autoSaveDocument();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [text, tone, length, rewritesCount]);
+
+  useEffect(() => {
+    getDocument();
+  }, [selectedDocument]);
+
   return (
-    <main className="flex bg-base-100 h-screen w-screen p-2" onClick={() => {
+    <main className="flex bg-base-100 h-screen w-screen p-2 max-sm:p-0" onClick={() => {
       if (moreMenuOpen) setMoreMenuOpen(false);
     }}>
       {/* Sidebar */}
-      <div className='flex flex-col p-5 min-w-[275px] max-w-[15vw] h-full rounded-md max-sm:hidden'>
-        <p className="mb-5 font-semibold">📝 RewordAI ✨</p>
-        <label className='btn btn-primary' htmlFor='newchat_modal'><FiPlus /> NEW DOCUMENT</label>
+      <div className={'flex flex-col p-5 min-w-[275px] max-w-[15vw] h-full rounded-md ' + (!showMenu ? "max-sm:hidden " : "max-sm:fixed max-sm:w-full max-sm:h-full max-sm:max-w-none bg-base-100 max-sm:z-50 ")}>
+        <div className="flex justify-between items-center max-sm:mb-4">
+          <p className="mb-5 font-semibold max-sm:mb-3">📝 RewordAI ✨</p>
+          <div className="hidden max-sm:flex justify-end mb-3">
+            <button className="btn btn-square btn-sm" onClick={() => setShowMenu(false)}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+        </div>
+        <label className='btn btn-primary' htmlFor='newdocument_modal' onClick={() => setNewDocumentTitle("")}><FiPlus /> NEW DOCUMENT</label>
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
-
+          {
+            documents.map((document: any, i: number) => {
+              return <div key={i} className={(selectedDocument === i ? ' bg-base-200 ' : ' bg-transparent hover:bg-base-200 ') + 'cursor-pointer flex flex-col px-3 py-2 rounded-md w-full mb-1'} onClick={() => setSelectedDocument(i)}>
+                <div className='flex justify-start items-center'>
+                  <div className='w-fit mr-2'>
+                    <FiFileText />
+                  </div>
+                  <div className='flex flex-col items-start'>
+                    <p className='text-sm text-ellipsis line-clamp-1 font-semibold'>{document.title}</p>
+                  </div>
+                </div>
+                {selectedDocument === i ?
+                  <div className='flex mt-2'>
+                    <label htmlFor='editdocument_modal' className='cursor-pointer flex justify-center items-center w-full p-2 bg-base-300 rounded-md mr-1 hover:bg-gray-500 hover:text-white' onClick={() => setNewDocumentTitle(documents[i].title)}>
+                      <FiEdit /><p className='ml-2 text-xs'>Edit</p>
+                    </label>
+                    <label htmlFor='deletedocument_modal' className='cursor-pointer flex justify-center items-center w-full p-2 bg-base-300 rounded-md hover:bg-red-500 hover:text-white'>
+                      <FiTrash /><p className='ml-2 text-xs'>Delete</p>
+                    </label>
+                  </div> : ""}
+              </div>
+            })
+          }
         </div>
         <hr />
         <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center mt-2 hover:bg-base-200 p-2 rounded-lg'>
@@ -153,7 +381,7 @@ export default function Home() {
                   <span><FiUser /></span>
                 </div>
               </div>
-              <p className='font-semibold'>User</p>
+              <p className='font-semibold'>{user?.name}</p>
             </div>
             <FiMoreHorizontal />
           </div>
@@ -168,21 +396,46 @@ export default function Home() {
         </div>
       </div>
       {/* Main */}
-      <div className='flex flex-col items-center justify-center ml-2 p-5 border-base-300 border-[1px] w-full h-full rounded-lg 2xl:items-center'>
-        <div className="flex flex-col w-full max-w-[50vw]">
-          <div className="flex mb-4 items-center">
+      <div className='flex flex-col items-center justify-center ml-2 p-5 border-base-300 border-[1px] w-full h-full rounded-lg 2xl:items-center max-sm:ml-0 max-sm:border-none max-sm:p-2 max-sm:items-start max-sm:justify-start'>
+        {(loadingDocument || creatingDocument) ? <div className="flex items-center"><span className="loading loading-spinner mr-4"></span><p>{loadingDocument ? "Loading" : "Creating"} Document...</p></div> : selectedDocument === -1 ? <div className='select-none flex flex-col justify-center items-center w-full h-full'>
+          <p className='text-5xl font-semibold mb-2'>📝 RewordAI ✨</p>
+          <p className='text-center'>Create a new document or select an existing document to start rewriting!</p>
+          <div className='flex flex-wrap justify-center mt-7'>
+            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-100 max-w-xs m-2'>
+              <p className='font-semibold text-md mb-2'>📝 Rewrite Documents</p>
+              <p className='text-sm opacity-70'>Rewrite documents using AI, and get a new version of the document!</p>
+            </div>
+            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-100 max-w-xs m-2'>
+              <p className='font-semibold text-md mb-2'>📃 Summarize Documents</p>
+              <p className='text-sm opacity-70'>Summarize documents using AI, and get a summarized version of the document!</p>
+            </div>
+            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-100 max-w-xs m-2'>
+              <p className='font-semibold text-md mb-2'>📖 Create Documents</p>
+              <p className='text-sm opacity-70'>Create documents using AI, and get a new document!</p>
+            </div>
+          </div>
+          <div className='flex mt-5'>
+            Press <kbd className="kbd kbd-sm mx-2">Alt</kbd> + <kbd className="kbd kbd-sm mx-2">N</kbd> to create a new document.
+          </div>
+        </div> : <div className="flex flex-col w-full max-w-[50vw] max-sm:max-w-none">
+          <div className="hidden max-sm:flex justify-end mb-3">
+            <button className="btn btn-square" onClick={() => setSelectedDocument(-1)}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+          <div className="flex mb-4 items-center max-sm:flex-wrap">
             <p className="mr-2 font-semibold">Tone: </p>
             {
               ["✨ Normal", "👟 Casual", "💼 Formal", "📝 Academic", "📖 Creative"].map((e, i: number) => {
-                return <button className={'btn btn-sm mr-2 ' + (tone == i ? 'btn-primary' : '')} onClick={() => setTone(i)}>{e}</button>
+                return <button className={'btn btn-sm mr-2 max-sm:mb-2 ' + (tone == i ? 'btn-primary' : '')} onClick={() => setTone(i)}>{e}</button>
               })
             }
           </div>
-          <div className="flex mb-4 items-center">
+          <div className="flex mb-4 items-center max-sm:flex-wrap">
             <p className="mr-2 font-semibold">Length: </p>
             {
               ["📝 Short", "📄 Medium", "📚 Long"].map((e, i: number) => {
-                return <button className={'btn btn-sm mr-2 ' + (length == i ? 'btn-primary' : '')} onClick={() => setLength(i)}>{e}</button>
+                return <button className={'btn btn-sm mr-2 max-sm:mb-2 ' + (length == i ? 'btn-primary' : '')} onClick={() => setLength(i)}>{e}</button>
               })
             }
           </div>
@@ -191,11 +444,11 @@ export default function Home() {
             <input type="number" className="input input-bordered w-20" onChange={(x) => setRewritesCount(parseInt(x.target.value))} value={rewritesCount} min={1} max={10} placeholder="1" />
           </div>
           <textarea className='bg-base-100 mt-5 text-md min-h-[25vh] p-2 rounded-md outline-none border-2 border-base-300' onChange={(x) => setText(x.target.value)} value={text} placeholder='Write or paste your text here...' autoFocus></textarea>
-          <div className="flex mt-2"><label htmlFor="generatetext_modal" className="btn btn-xs">Generate text with AI</label></div>
-          <div className="mt-7 flex items-center">
-            <button className={'btn btn-primary ' + (text.length < 3 || loading ? "opacity-50" : "")} onClick={() => rewrite()}>{loading ? <span className="loading loading-spinner"></span> : "📝 "}Rewrite</button>
-            <details className="dropdown dropdown-top" onToggle={(x) => setMoreMenuOpen(x.currentTarget.open)} open={moreMenuOpen}>
-              <summary tabIndex={0} className='btn ml-2'>✨ More</summary>
+          <div className="flex mt-2"><label htmlFor="generatetext_modal" className="btn btn-xs max-sm:btn-sm">Generate text with AI</label></div>
+          <div className="mt-7 flex items-center max-sm:flex-col">
+            <button className={'btn btn-primary max-sm:w-full max-sm:mb-3 ' + (text.length < 3 || loading ? "opacity-50" : "")} onClick={() => rewrite()}>{loading ? <span className="loading loading-spinner"></span> : "📝 "}Rewrite</button>
+            <details className="dropdown dropdown-top max-sm:w-full" onToggle={(x) => setMoreMenuOpen(x.currentTarget.open)} open={moreMenuOpen}>
+              <summary tabIndex={0} className='btn ml-2 max-sm:w-full max-sm:ml-0'>✨ More</summary>
               <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li onClick={() => { doMore(0); setMoreMenuOpen(false) }}><a>➡️ Continue Writing</a></li>
                 <li onClick={() => { doMore(1); setMoreMenuOpen(false) }}><a>📝 Summarise</a></li>
@@ -208,6 +461,50 @@ export default function Home() {
               </ul>
             </details>
           </div>
+        </div>}
+        <label htmlFor='newdocument_modal' className='sm:hidden absolute right-5 bottom-5 btn btn-primary btn-square'><FiPlus /></label>
+        {selectedDocument === -1 ? <button className='sm:hidden absolute left-5 top-5 btn btn-square' onClick={() => setShowMenu(!showMenu)}><FiMenu /></button> : ""}
+        {/* New Document Modal */}
+        <input type="checkbox" id="newdocument_modal" className="modal-toggle" />
+        <div className="modal">
+          <div className="modal-box">
+            <h3 className="flex items-center font-bold text-lg"><FiFileText className="mr-1" /> New Document</h3>
+            <p className="flex items-center py-4"><FiType className='mr-2' />Title</p>
+            <input className="input input-bordered w-full" placeholder="What is this document about?" type="text" onChange={(x) => setNewDocumentTitle(x.target.value)} value={newDocumentTitle} />
+            <div className="modal-action">
+              <label htmlFor="newdocument_modal" className="btn">Cancel</label>
+              <label htmlFor="newdocument_modal" className="btn btn-primary" onClick={() => createDocument()}>Create Document ✨</label>
+            </div>
+          </div>
+          <label className="modal-backdrop" htmlFor="newdocument_modal">Cancel</label>
+          <label ref={newDocumentModalRef} htmlFor="newdocument_modal" hidden></label>
+        </div>
+        {/* Edit Document Modal */}
+        <input type="checkbox" id="editdocument_modal" className="modal-toggle" />
+        <div className="modal">
+          <div className="modal-box">
+            <h3 className="flex items-center font-bold text-lg"><FiEdit className="mr-1" /> Edit Document</h3>
+            <p className="flex items-center py-4"><FiType className='mr-2' />Title</p>
+            <input className="input input-bordered w-full" placeholder="What is this chat about?" type="text" onChange={(x) => setNewDocumentTitle(x.target.value)} value={newDocumentTitle} />
+            <div className="modal-action">
+              <label htmlFor="editdocument_modal" className="btn">Cancel</label>
+              <label htmlFor="editdocument_modal" className="btn btn-primary" onClick={() => editDocument()}>Save</label>
+            </div>
+          </div>
+          <label className="modal-backdrop" htmlFor="editdocument_modal">Cancel</label>
+        </div>
+        {/* Delete Document Modal */}
+        <input type="checkbox" id="deletedocument_modal" className="modal-toggle" />
+        <div className="modal">
+          <div className="modal-box">
+            <h3 className="flex items-center font-bold text-lg"><FiTrash className="mr-1" /> Delete Document</h3>
+            <p className="py-4">Are you sure want to delete this document?</p>
+            <div className="modal-action">
+              <label htmlFor="deletedocument_modal" className="btn">Cancel</label>
+              <label htmlFor="deletedocument_modal" className="btn btn-error" onClick={() => deleteDocument()}>Delete</label>
+            </div>
+          </div>
+          <label className="modal-backdrop" htmlFor="deletedocument_modal">Cancel</label>
         </div>
         {/* Rewrites Modal */}
         <label ref={rewritesModalRef} htmlFor="rewrites_modal" hidden></label>
@@ -262,6 +559,6 @@ export default function Home() {
         </div>
       </div>
       <ToastContainer />
-    </main>
+    </main >
   )
 }
