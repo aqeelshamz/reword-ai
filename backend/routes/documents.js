@@ -1,0 +1,89 @@
+import express from "express";
+import joi from "joi";
+import { lengths, prompt, tones } from "../utils/utils.js";
+import { Configuration, OpenAIApi } from "openai";
+import validate from "../middlewares/validate.js";
+import Document from "../models/Document.js";
+
+const router = express.Router();
+
+router.get("/", validate, async (req, res) => {
+    res.send(await Document.find({ userId: req.user._id }));
+});
+
+router.post("/", validate, async (req, res) => {
+    const schema = joi.object({
+        title: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+        const newDocument = new Document({
+            title: data.title,
+            content: "",
+            userId: req.user._id,
+        });
+
+        await newDocument.save();
+
+        return res.send(newDocument);
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
+});
+
+router.post("/save", validate, async (req, res) => {
+    const schema = joi.object({
+        documentId: joi.string().required(),
+        content: joi.string().required().allow(""),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+
+        await Document.updateOne({ _id: data.documentId }, { content: data.content });
+
+        return res.send("Saved");
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
+});
+
+router.post("/rename", validate, async (req, res) => {
+    const schema = joi.object({
+        documentId: joi.string().required(),
+        title: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+
+        await Document.updateOne({ _id: data.documentId }, { title: data.title });
+
+        return res.send("Renamed");
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
+});
+
+router.post("/delete", validate, async (req, res) => {
+    const schema = joi.object({
+        documentId: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+
+        await Document.deleteOne({ _id: data.documentId });
+
+        return res.send("Deleted");
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
+});
+
+export default router;
