@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RewordAI Documentation</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap");
+
+    * {
+      font-family: "Golos Text", sans-serif;
+      background: rgb(16, 14, 24);
+      color: rgb(160, 156, 187);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 5vh 25vw;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      color: rgb(213, 210, 228);
+    }
+
+    code {
+      font-family: "Lucida Console", "Courier New", monospace;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.425);
+    }
+
+    code,
+    span {
+      background-color: transparent;
+      color: white;
+    }
+
+    b {
+      font-weight: 600;
+    }
+
+    img {
+      max-height: 50vh;
+      max-width: 50vw;
+      border-radius: 15px;
+    }
+
+    @media only screen and (max-width: 1300px) {
+      body {
+        margin: 5vh 5vw;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="title">
+    🤖 RewordAI - Your Ultimate AI-Powered Rewriting and Grammar Correcting Tool!
+  </h1>
+  <p>
+    <img src="https://raw.githubusercontent.com/aqeelshamz/envato-src/main/rewordai_desc_1.png" alt="RewordAI" />
+  </p>
+  <p>
+    Welcome! First of all we want to thank you for purchasing
+    <b>RewordAI - AI Rewriter, Grammar Correcting, Content Generation, Summarization and More (Next.js) </b>. We really
+    do
+    appreciate every sale. If you like our work please do not forget to rate
+    it. It helps us in developing new and better items. In the following
+    sections we will explain how to set up and use it the easiest way
+    possible. If you have any questions that you feel should have been in this
+    document you can contact us through our profile page on
+    <a target="_blank" href="https://codecanyon.net/user/aqeelshamz/portfolio"
+      target="_blank"><b>codecanyon.net/user/aqeelshamz</b></a>
+    and we'll get back to you as soon as possible. Thanks so much!!!
+  </p>
+  <p>
+    RewordAI is an advanced AI-powered text rewriter and content generation tool designed to assist writers, bloggers, marketers, and
+    students in creating high-quality written content effortlessly. It leverages cutting-edge natural language
+    processing algorithms to analyze your writing prompts and generate contextually appropriate content in various
+    writing styles and tones.
+  </p>
+  <h3 id="table-of-contents">📑 Table of Contents</h3>
+  <ul>
+    <li><a href="#key-features">Key Features</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#installation-">Installation</a></li>
+    <li><a href="#backend-setup-">Backend Setup</a></li>
+    <li><a href="#frontend-setup-">Frontend Setup</a></li>
+    <li><a href="#signup-and-login-">Signup and Login</a></li>
+    <li><a href="#packages">Packages Used</a></li>
+    <li><a href="#references">References</a></li>
+    <li><a href="#support">Support</a></li>
+  </ul>
+
+  <h1 id="key-features">⚡ Key Features</h1>
+  <ul>
+    <li>
+      <p>
+        <b>AI-Powered Rewriting:</b> Harness the power of artificial intelligence to rewrite your text flawlessly.
+        RewordAI intelligently suggests alternative phrases and synonyms, enhancing the overall quality and clarity of
+        your content.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Various Writing Styles:</b> Choose from a diverse range of writing styles and tones to match your specific
+        needs. From formal and academic to casual and creative, RewordAI caters to all writing styles.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Customizable Length:</b> Determine the length of your generated content with ease. Whether you need short
+        snippets or comprehensive essays, RewordAI has you covered.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Grammar Correcting:</b> Say goodbye to grammatical errors! RewordAI thoroughly corrects grammar mistakes,
+        spelling errors, and punctuation issues, ensuring your writing is error-free and polished.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>AI Content Generation:</b> Simply enter your prompts in a user-friendly interface, and RewordAI will work its
+        magic to produce outstanding content within seconds.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Multiple Documents:</b> Organize your writing efficiently with the ability to create and manage multiple
+        documents. Seamlessly switch between projects and stay organized in one centralized platform.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Summarization:</b> Summarize lengthy content into concise and clear insights. Save time and effort while
+        maintaining the core message of your text.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Counterargument Assistance:</b> Address potential counterarguments with precision. Improve the credibility of
+        your content and make it more compelling.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Vocabulary Enrichment:</b> Expand your vocabulary and language skills with AI-driven suggestions for varied
+        and impactful word choices.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Dark Theme Option:</b> Work comfortably in low-light environments with RewordAI's dark theme. Enable the dark
+        mode for a visually appealing and comfortable writing experience.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>User-Friendly Interface:</b> RewordAI offers an intuitive and user-friendly interface, making it easy for
+        both beginners and seasoned writers to navigate and utilize its powerful features.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Responsive Design:</b> Access RewordAI seamlessly across various devices, including desktops, laptops,
+        tablets, and smartphones.
+      </p>
+    </li>
+  </ul>
+  <h1 id="getting-started">🚀Getting Started</h1>
+  <h3 id="installation-">🔌 Installation:</h3>
+  <ul>
+    <li>
+      <p>
+        <b>Next.js:</b> Install Next.js, a popular React framework for
+        building web applications. You can download and install it from the
+        official website or use a package manager like npm or yarn.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Node.js:</b> Install Node.js, a JavaScript runtime that allows you
+        to execute JavaScript code outside of a web browser. You can download
+        the latest version of Node.js from the official website and follow the
+        installation instructions for your operating system.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>MongoDB:</b> Install MongoDB, a NoSQL database, to store and manage
+        data for your RewordAI app. MongoDB offers installation guides for
+        different operating systems on their official website.
+      </p>
+    </li>
+  </ul>
+  <h3 id="backend-setup-">⚙️ Backend Setup:</h3>
+  <ul>
+    <li>
+      Open a terminal or command prompt and navigate to the backend directory
+      of your RewordAI app.
+    </li>
+    <li>
+      <b>Install Dependencies:</b> Run the following command to install the
+      required dependencies for the backend:
+      <pre><code>npm <span class="hljs-keyword">install</span>
+</code></pre>
+    </li>
+    <li>
+      <b>Start the Backend:</b> Once the dependencies are installed, start the
+      backend server using the following command: This is some basic, sample
+      markdown.
+      <pre><code><span class="hljs-built_in">npm</span> start
+</code></pre>
+    </li>
+    <li>
+      <p>
+        <b>Database Setup:</b> Replace the DB_URL in the .env file with the
+        URL of your MongoDB database. This URL should include the necessary
+        credentials to connect to your database.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>OpenAI API Key:</b> Replace the OPENAI_API_KEY in the .env file
+        with your unique API key obtained from the OpenAI platform. This key
+        is required to interact with the AI models used for image generation.
+      </p>
+    </li>
+  </ul>
+  <h3 id="frontend-setup-">🖥️ Frontend Setup:</h3>
+  <ul>
+    <li>
+      <p>
+        Open a new terminal or command prompt and navigate to the frontend
+        directory of your RewordAI app.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Install Dependencies:</b> Run the following command to install the
+        required dependencies for the frontend:
+      </p>
+      <pre><code>npm <span class="hljs-keyword">install</span>
+</code></pre>
+    </li>
+    <li>
+      <p>
+        <b>Run the Frontend:</b> After installing dependencies, start the
+        frontend development server using the following command:
+      </p>
+      <pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> dev</span>
+</code></pre>
+    </li>
+    <li>
+      <p>
+        The frontend development server is now up and running, and you can
+        access the app in your web browser at the specified URL (usually
+        <a target="_blank" href="http://localhost:3000">http://localhost:3000</a>).
+      </p>
+    </li>
+  </ul>
+  <h3 id="signup-and-login-">📲 Signup and Login:</h3>
+  <ul>
+    <li>
+      <p>
+        Once you access the app in your web browser, you will be directed to
+        the login screen.
+      </p>
+    </li>
+    <li>
+      <p>
+        Click on &quot;Signup&quot; to create a new account by providing your
+        full name, email, and password.
+      </p>
+    </li>
+    <li>
+      <p>
+        After creating an account, use your credentials to log in to the app.
+      </p>
+    </li>
+  </ul>
+  <h1 id="packages">📦 Packages Used</h1>
+  <p>Frontend:</p>
+  <ul>
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/@types/node">@types/node</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/@types/react">@types/react</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/@types/react-dom">@types/react-dom</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/autoprefixer">autoprefixer</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/axios">axios</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/eslint">eslint</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/eslint-config-next">eslint-config-next</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/file-saver">file-saver</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/next">next</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/postcss">postcss</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/react">react</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/react-dom">react-dom</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/react-icons">react-icons</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/react-toastify">react-toastify</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/tailwindcss">tailwindcss</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/typescript">typescript</a>
+    </li>
+    <br />
+  </ul>
+  <p>Backend:</p>
+  <ul>
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/bcrypt">bcrypt</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/cors">cors</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/dotenv">dotenv</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/express">express</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/joi">joi</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/jsonwebtoken">jsonwebtoken</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/mongoose">mongoose</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/nodemon">nodemon</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/openai">openai</a>
+    </li>
+    <br />
+  </ul>
+  <h1 id="references">📚 References</h1>
+  <ul>
+    <li>
+      <a target="_blank" href="https://nextjs.org/docs/getting-started/installation">Next.js Documentation</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://nodejs.org/en">Node.js Documentation</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.mongodb.com/try/download/community">MongoDB Documentation</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://platform.openai.com/docs/api-reference">OpenAI API Documentation</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://daisyui.com/components/">DaisyUI</a>
+    </li>
+    <br />
+  </ul>
+  <h1 id="support">📧 Support</h1>
+  <p>
+    <img src="https://raw.githubusercontent.com/aqeelshamz/envato-src/main/rewordai_desc_17.png"
+      alt="aqeelten@gmail.com" />
+  </p>
+  <p>
+    Start creating exceptional content with RewordAI and unlock the power of AI for your writing endeavors! Happy
+    writing!<br />For any assistance or inquiries,
+    refer to the Next.js and Node.js support documentation or reach out to us
+    at
+    <a target="_blank" href="mailto:aqeelten@gmail.com">aqeelten@gmail.com</a>.<br />
+  </p>
+</body>
+
+</html>
