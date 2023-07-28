@@ -28,8 +28,8 @@ export default function Home() {
   const [loadingDocument, setLoadingDocument] = useState<boolean>(false);
   const [creatingDocument, setCreatingDocument] = useState<boolean>(false);
 
-  const getDocument = async () => {
-    if (selectedDocument === -1 || !documents[selectedDocument]?._id) return;
+  const getDocument = async (documentId: string) => {
+    if (selectedDocument === -1 || !documentId) return;
 
     setLoadingDocument(true);
     const config = {
@@ -40,7 +40,7 @@ export default function Home() {
         "Content-Type": `application/json`,
       },
       data: {
-        documentId: documents[selectedDocument]?._id
+        documentId: documentId
       }
     };
 
@@ -84,7 +84,7 @@ export default function Home() {
 
   const createDocument = async () => {
     if (!newDocumentTitle || creatingDocument || loadingDocument) return;
-
+    setSelectedDocument(-1);
     setCreatingDocument(true);
     const config = {
       method: "POST",
@@ -102,14 +102,9 @@ export default function Home() {
       .then((response) => {
         toast.success("Document created!");
         getDocuments();
-        setNewDocumentTitle("");
-        setText("");
-        setTone(0);
-        setLength(1);
-        setRewritesCount(1);
+        setSelectedDocument(0);
         setCreatingDocument(false);
         setLoadingDocument(false);
-        setSelectedDocument(0);
       })
       .catch((error) => {
         setNewDocumentTitle("");
@@ -160,6 +155,7 @@ export default function Home() {
     axios(config)
       .then((response) => {
         getDocuments();
+        setSelectedDocument(-1);
         toast.success("Document deleted!");
       })
       .catch((error) => {
@@ -203,7 +199,6 @@ export default function Home() {
         setLoading(false);
         setRewrites(response.data);
         rewritesModalRef.current?.click();
-        console.log(response)
       })
       .catch((error) => {
         setLoading(false);
@@ -268,7 +263,7 @@ export default function Home() {
 
   const handleKeyDown = (event: any) => {
     if (event.altKey && event.key === "n") {
-      console.log("Alt+N");
+      console.log("New document");
       setNewDocumentTitle("");
       newDocumentModalRef.current?.click();
     }
@@ -297,8 +292,8 @@ export default function Home() {
     document.querySelector("html")!.setAttribute("data-theme", localTheme);
   }, [theme]);
 
-  const autoSaveDocument = () => {
-    if (!documents[selectedDocument]?._id) return;
+  const autoSaveDocument = (documentId: string) => {
+    if (!documentId) return;
 
     const config = {
       method: "POST",
@@ -308,7 +303,7 @@ export default function Home() {
         "Content-Type": `application/json`,
       },
       data: {
-        documentId: documents[selectedDocument]?._id,
+        documentId: documentId,
         content: text,
         tone: tone,
         length: length,
@@ -323,14 +318,14 @@ export default function Home() {
   useEffect(() => {
     if (selectedDocument === -1) return;
     const timer = setTimeout(() => {
-      autoSaveDocument();
+      autoSaveDocument(documents[selectedDocument]?._id);
     }, 1000);
     return () => clearTimeout(timer);
   }, [text, tone, length, rewritesCount]);
 
   useEffect(() => {
-    getDocument();
-  }, [selectedDocument]);
+    getDocument(documents[selectedDocument]?._id);
+  }, [selectedDocument, documents]);
 
   return (
     <main className="flex bg-base-100 h-screen w-screen p-2 max-sm:p-0" onClick={() => {
@@ -350,7 +345,7 @@ export default function Home() {
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
           {
             documents.map((document: any, i: number) => {
-              return <div key={i} className={(selectedDocument === i ? ' bg-base-200 ' : ' bg-transparent hover:bg-base-200 ') + 'cursor-pointer flex flex-col px-3 py-2 rounded-md w-full mb-1'} onClick={() => setSelectedDocument(i)}>
+              return <div key={i} className={(selectedDocument === i ? ' bg-base-200 ' : ' bg-transparent hover:bg-base-200 ') + 'cursor-pointer flex flex-col px-3 py-2 rounded-md w-full mb-1'} onClick={() => { setSelectedDocument(i); setShowMenu(false) }}>
                 <div className='flex justify-start items-center'>
                   <div className='w-fit mr-2'>
                     <FiFileText />
@@ -401,23 +396,23 @@ export default function Home() {
           <p className='text-5xl font-semibold mb-2'>📝 RewordAI ✨</p>
           <p className='text-center'>Create a new document or select an existing document to start rewriting!</p>
           <div className='flex flex-wrap justify-center mt-7'>
-            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-100 max-w-xs m-2'>
-              <p className='font-semibold text-md mb-2'>📝 Rewrite Documents</p>
-              <p className='text-sm opacity-70'>Rewrite documents using AI, and get a new version of the document!</p>
+            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>
+              <p className='font-semibold text-md mb-2'>✨📚 AI-Powered Grammar Checker</p>
+              <p className='text-sm opacity-70'>Instantly improve your writing with our advanced AI-powered grammar checker. Eliminate grammar errors and create flawless content effortlessly.</p>
             </div>
-            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-100 max-w-xs m-2'>
-              <p className='font-semibold text-md mb-2'>📃 Summarize Documents</p>
-              <p className='text-sm opacity-70'>Summarize documents using AI, and get a summarized version of the document!</p>
+            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>
+              <p className='font-semibold text-md mb-2'>📄📝 Multiple Document Creation</p>
+              <p className='text-sm opacity-70'>Stay organized and manage various writing projects with ease. Create and work on multiple documents simultaneously for efficient writing.</p>
             </div>
-            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-100 max-w-xs m-2'>
-              <p className='font-semibold text-md mb-2'>📖 Create Documents</p>
-              <p className='text-sm opacity-70'>Create documents using AI, and get a new document!</p>
+            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>
+              <p className='font-semibold text-md mb-2'>🔄🎭 Customized Rewrites in Different Tones</p>
+              <p className='text-sm opacity-70'>Tailor your content to perfection by choosing from various tones. Get grammatically-correct rewrites in ✨ Normal, 💼 Formal, 📝 Academic, and more, enhancing your message's impact.</p>
             </div>
           </div>
           <div className='flex mt-5'>
             Press <kbd className="kbd kbd-sm mx-2">Alt</kbd> + <kbd className="kbd kbd-sm mx-2">N</kbd> to create a new document.
           </div>
-        </div> : <div className="flex flex-col w-full max-w-[50vw] max-sm:max-w-none">
+        </div> : <div className="animate-fade-in-bottom flex flex-col w-full max-w-[50vw] max-sm:max-w-none">
           <div className="hidden max-sm:flex justify-end mb-3">
             <button className="btn btn-square" onClick={() => setSelectedDocument(-1)}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -443,6 +438,7 @@ export default function Home() {
             <p className="mr-2 font-semibold">Rewrites: </p>
             <input type="number" className="input input-bordered w-20" onChange={(x) => setRewritesCount(parseInt(x.target.value))} value={rewritesCount} min={1} max={10} placeholder="1" />
           </div>
+          <p className="flex items-center font-semibold text-xl mb-1 mt-4"><FiFileText className="mr-2" /> {documents[selectedDocument]?.title}</p>
           <textarea className='bg-base-100 mt-5 text-md min-h-[25vh] p-2 rounded-md outline-none border-2 border-base-300' onChange={(x) => setText(x.target.value)} value={text} placeholder='Write or paste your text here...' autoFocus></textarea>
           <div className="flex mt-2"><label htmlFor="generatetext_modal" className="btn btn-xs max-sm:btn-sm">Generate text with AI</label></div>
           <div className="mt-7 flex items-center max-sm:flex-col">
@@ -470,7 +466,12 @@ export default function Home() {
           <div className="modal-box">
             <h3 className="flex items-center font-bold text-lg"><FiFileText className="mr-1" /> New Document</h3>
             <p className="flex items-center py-4"><FiType className='mr-2' />Title</p>
-            <input className="input input-bordered w-full" placeholder="What is this document about?" type="text" onChange={(x) => setNewDocumentTitle(x.target.value)} value={newDocumentTitle} />
+            <input className="input input-bordered w-full" placeholder="What is this document about?" type="text" onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                createDocument();
+                newDocumentModalRef.current?.click();
+              }
+            }} onChange={(x) => setNewDocumentTitle(x.target.value)} value={newDocumentTitle} />
             <div className="modal-action">
               <label htmlFor="newdocument_modal" className="btn">Cancel</label>
               <label htmlFor="newdocument_modal" className="btn btn-primary" onClick={() => createDocument()}>Create Document ✨</label>

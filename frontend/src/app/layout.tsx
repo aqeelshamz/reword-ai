@@ -7,6 +7,11 @@ const golos = Golos_Text({
   subsets: ['latin'],
 })
 
+export const metadata = {
+  title: 'RewordAI',
+  description: 'Your AI Text Rewriter',
+}
+
 export default function RootLayout({
   children,
 }: {
