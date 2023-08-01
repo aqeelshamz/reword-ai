@@ -35,7 +35,6 @@ export default function Page() {
         if (!title) return toast.error("Please enter a title!");
         if (!rewriteLimit) return toast.error("Please enter a rewrite limit!");
         if (!price) return toast.error("Please enter a price!");
-        if (!type) return toast.error("Please select a type!");
 
         const config = {
             method: "POST",
@@ -48,7 +47,7 @@ export default function Page() {
                 title: title,
                 rewriteLimit: rewriteLimit,
                 ads: ads,
-                price: price,
+                price: type === 0 ? 0 : price,
                 type: type,
             }
         };
@@ -73,7 +72,6 @@ export default function Page() {
         if (!title) return toast.error("Please enter a title!");
         if (!rewriteLimit) return toast.error("Please enter a rewrite limit!");
         if (!price) return toast.error("Please enter a price!");
-        if (!type) return toast.error("Please select a type!");
 
         const config = {
             method: "POST",
@@ -88,7 +86,7 @@ export default function Page() {
                 title: title,
                 rewriteLimit: rewriteLimit,
                 ads: ads,
-                price: price,
+                price: type === 0 ? 0 : price,
                 type: type,
             }
         };
@@ -126,7 +124,7 @@ export default function Page() {
                                 <div className="badge badge-secondary">{["Free", "Monthly", "Yearly", "Lifetime"][plan?.type]}</div>
                                 {!plan?.enable ? <div className="badge badge-ghost">Disabled</div> : ""}
                             </h2>
-                            <p className="font-semibold text-4xl mb-4">${plan?.price}<span className="text-sm">/{["Free", "Monthly", "Yearly", "Lifetime"][plan?.type].toLowerCase()}</span></p>
+                            <p className="font-semibold text-4xl mb-4">${plan?.price}<span className="text-sm">{["", " / Month", " / Year", " / Lifetime"][plan?.type].toLowerCase()}</span></p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.rewriteLimit} rewrites</p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.ads ? "Shows Ads" : "No Ads"}</p>
                             <div className="card-actions justify-end">
