@@ -15,6 +15,7 @@ export default function Page() {
     const [enable, setEnable] = useState(false);
 
     const [editPlanId, setEditPlanId] = useState("");
+    const [deletePlanId, setDeletePlanId] = useState("");
 
     const getPlans = async () => {
         const config = {
@@ -108,6 +109,29 @@ export default function Page() {
             });
     }
 
+    const deletePlan = async () => {
+        const config = {
+            method: "POST",
+            url: `${serverURL}/admin/plans/delete`,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": `application/json`,
+            },
+            data: {
+                planId: deletePlanId
+            }
+        };
+
+        axios(config)
+            .then((response) => {
+                toast.success("Plan deleted!");
+                getPlans();
+            })
+            .catch((error) => {
+                toast.error("Something went wrong!");
+            });
+    }
+
     useEffect(() => {
         getPlans();
     }, []);
@@ -137,7 +161,7 @@ export default function Page() {
                                     setEditPlanId(plan?._id);
                                     setEnable(plan?.enable);
                                 }}><FiEdit />Edit</label>
-                                <label className='btn btn-sm'><FiTrash />Delete</label>
+                                <label htmlFor="deleteplan_modal" className='btn btn-sm' onClick={() => setDeletePlanId(plan?._id)}><FiTrash />Delete</label>
                             </div>
                         </div>
                     </div>
@@ -214,6 +238,19 @@ export default function Page() {
                 </div>
             </div>
             <label htmlFor="editplan_modal" className="modal-backdrop"></label>
+        </div>
+        {/* Delete Plan Modal */}
+        <input type="checkbox" id="deleteplan_modal" className="modal-toggle" />
+        <div className="modal">
+            <div className="modal-box">
+                <h3 className="flex items-center font-bold text-lg"><FiTrash className="mr-1" /> Delete Plan</h3>
+                <p className="py-4">Are you sure want to delete this plan?</p>
+                <div className="modal-action">
+                    <label htmlFor="deleteplan_modal" className="btn">Cancel</label>
+                    <label htmlFor="deleteplan_modal" className="btn btn-error" onClick={() => deletePlan()}>Delete</label>
+                </div>
+            </div>
+            <label className="modal-backdrop" htmlFor="deleteplan_modal">Cancel</label>
         </div>
     </div>
 }

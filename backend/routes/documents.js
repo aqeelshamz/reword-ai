@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get("/list", validate, async (req, res) => {
     const documents = (await Document.find({ userId: req.user._id })).reverse();
-    res.send({ user: { name: req.user.name, email: req.user.email }, documents: documents });
+    res.send({ user: { name: req.user.name, email: req.user.email, type: req.user.type }, documents: documents });
 });
 
 router.post("/by-id", validate, async (req, res) => {

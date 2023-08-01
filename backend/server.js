@@ -6,6 +6,7 @@ import rewordRouter from "./routes/rewordai.js";
 import usersRouter from "./routes/users.js";
 import documentsRouter from "./routes/documents.js";
 import adminRouter from "./routes/admin.js";
+import plansRouter from "./routes/plans.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use("/rewordai", rewordRouter);
 app.use("/users", usersRouter);
 app.use("/documents", documentsRouter);
 app.use("/admin", adminRouter);
+app.use("/plans", plansRouter);
 
 app.get("/", (req, res) => {
     res.send("RewordAI API");
