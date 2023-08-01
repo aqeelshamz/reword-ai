@@ -4,6 +4,7 @@ import { FiEdit, FiTrash, FiUser, FiUsers } from 'react-icons/fi';
 import serverURL from '../../../utils/utils';
 import axios from "axios";
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 export default function Page() {
     const [users, setUsers] = useState([]);
@@ -72,7 +73,7 @@ export default function Page() {
                                     </div>
                                 </td>
                                 <td>
-                                    <a href={`mailto:${user?.email}`} target='_blank' className='underline'>{user?.email}</a>
+                                    <Link href={`mailto:${user?.email}`} target='_blank' className='underline'>{user?.email}</Link>
                                 </td>
                                 <td>{user?.requests}</td>
                                 <th>

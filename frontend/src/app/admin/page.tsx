@@ -1,6 +1,5 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-
-    return <p>Admin Panel</p>
-}
+    redirect(`/admin/dashboard`);
+}       

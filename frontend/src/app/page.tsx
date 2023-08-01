@@ -1,8 +1,9 @@
 "use client";
 import serverURL from "@/utils/utils";
 import axios from "axios";
+import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
-import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage, FiType, FiFileText, FiEdit, FiTrash, FiMenu } from "react-icons/fi";
+import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowUpLeft, FiArrowUpRight, FiArrowRight } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -334,13 +335,14 @@ export default function Home() {
       {/* Sidebar */}
       <div className={'flex flex-col p-5 min-w-[275px] max-w-[15vw] h-full rounded-md ' + (!showMenu ? "max-sm:hidden " : "max-sm:fixed max-sm:w-full max-sm:h-full max-sm:max-w-none bg-base-100 max-sm:z-50 ")}>
         <div className="flex justify-between items-center max-sm:mb-4">
-          <p className="mb-5 font-semibold max-sm:mb-3">📝 RewordAI ✨</p>
+          <p className="mb-5 font-semibold max-sm:mb-3">📝 RewordAI ✨<Link href="/plans"><label className="ml-2 cursor-pointer badge badge-primary badge-outline">FREE PLAN</label></Link></p>
           <div className="hidden max-sm:flex justify-end mb-3">
             <button className="btn btn-square btn-sm" onClick={() => setShowMenu(false)}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
         </div>
+        {user?.type === "admin" ? <Link href="/admin/dashboard"><label className='btn mb-2'><FiUser /> ADMIN PANEL <FiArrowRight /></label></Link> : ""}
         <label className='btn btn-primary' htmlFor='newdocument_modal' onClick={() => setNewDocumentTitle("")}><FiPlus /> NEW DOCUMENT</label>
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
           {
