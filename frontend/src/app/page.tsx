@@ -342,7 +342,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {user?.type === "admin" ? <Link href="/admin/dashboard"><label className='btn mb-2'><FiUser /> ADMIN PANEL <FiArrowRight /></label></Link> : ""}
+        {user?.type === "admin" ? <Link href="/admin/dashboard"><label className='btn mb-2 w-full'><FiUser /> ADMIN PANEL <FiArrowRight /></label></Link> : ""}
         <label className='btn btn-primary' htmlFor='newdocument_modal' onClick={() => setNewDocumentTitle("")}><FiPlus /> NEW DOCUMENT</label>
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
           {
