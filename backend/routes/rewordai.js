@@ -2,7 +2,7 @@ import express from "express";
 import joi from "joi";
 import { lengths, prompt, tones } from "../utils/utils.js";
 import { Configuration, OpenAIApi } from "openai";
-import validate from "../middlewares/validate.js";
+import { validate } from "../middlewares/validate.js";
 
 const router = express.Router();
 

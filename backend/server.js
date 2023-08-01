@@ -5,6 +5,7 @@ import cors from "cors";
 import rewordRouter from "./routes/rewordai.js";
 import usersRouter from "./routes/users.js";
 import documentsRouter from "./routes/documents.js";
+import adminRouter from "./routes/admin.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/rewordai", rewordRouter);
 app.use("/users", usersRouter);
 app.use("/documents", documentsRouter);
+app.use("/admin", adminRouter);
 
 app.get("/", (req, res) => {
     res.send("RewordAI API");

@@ -3,7 +3,7 @@ import joi from "joi";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import validate from "../middlewares/validate.js";
+import { validate } from "../middlewares/validate.js";
 
 const router = express.Router();
 
@@ -30,15 +30,8 @@ router.post("/signup", async (req, res) => {
             name: data.name,
             email: data.email,
             password: hashedPassword,
+            type: "user",
         });
-
-        // const newSettings = new Settings({
-        //     userId: newUser._id,
-        //     imageSize: 1,
-        //     imageNos: 4,
-        //     theme: "light",
-        // });
-        // await newSettings.save();
 
         const savedUser = await newUser.save();
         return res.send(savedUser);
