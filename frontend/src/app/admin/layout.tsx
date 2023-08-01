@@ -1,16 +1,10 @@
 "use client";
-import type { Metadata } from 'next'
-import { Golos_Text } from 'next/font/google'
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { FiCreditCard, FiDollarSign, FiEdit, FiFile, FiFileText, FiGift, FiHome, FiKey, FiLogOut, FiMoreHorizontal, FiPlus, FiSettings, FiTrash, FiUser, FiUsers } from "react-icons/fi";
+import { FiCreditCard, FiDollarSign, FiGift, FiHome, FiLogOut, FiMoreHorizontal, FiSettings, FiUser, FiUsers } from "react-icons/fi";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-
-const golos = Golos_Text({
-  weight: '400',
-  subsets: ['latin'],
-})
+import { usePathname } from "next/navigation";
 
 export const metadata = {
   title: 'RewordAI',
@@ -24,6 +18,7 @@ export default function RootLayout({
 }) {
   const [showMenu, setShowMenu] = useState(true);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const pathName = usePathname();
 
   return (
     <main className="flex bg-base-100 h-screen w-screen p-2 max-sm:p-0" onClick={() => {
@@ -40,12 +35,12 @@ export default function RootLayout({
           </div>
         </div>
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
-          <Link href="/admin/dashboard"><label className='btn w-full justify-start normal-case' onClick={() => { }}><FiHome /> Dashboard</label></Link>
-          <Link href="/admin/plans"><label className='btn btn-ghost w-full justify-start normal-case' onClick={() => { }}><FiGift /> Plans</label></Link>
-          <Link href="/admin/purchases"><label className='btn btn-ghost w-full justify-start normal-case' onClick={() => { }}><FiDollarSign /> Purchases</label></Link>
-          <Link href="/admin/payment_methods"><label className='btn btn-ghost w-full justify-start normal-case' onClick={() => { }}><FiCreditCard /> Payment methods</label></Link>
-          <Link href="/admin/users"><label className='btn btn-ghost w-full justify-start normal-case' onClick={() => { }}><FiUsers /> Users</label></Link>
-          <Link href="/admin/settings"><label className='btn btn-ghost w-full justify-start normal-case' onClick={() => { }}><FiSettings /> Settings</label></Link>
+          <Link href="/admin/dashboard"><label className={(!pathName.includes("/admin/dashboard") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiHome /> Dashboard</label></Link>
+          <Link href="/admin/plans"><label className={(!pathName.includes("/admin/plans") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiGift /> Plans</label></Link>
+          <Link href="/admin/purchases"><label className={(!pathName.includes("/admin/purchases") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiDollarSign /> Purchases</label></Link>
+          <Link href="/admin/payment_methods"><label className={(!pathName.includes("/admin/payment_methods") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiCreditCard /> Payment methods</label></Link>
+          <Link href="/admin/users"><label className={(!pathName.includes("/admin/users") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiUsers /> Users</label></Link>
+          <Link href="/admin/settings"><label className={(!pathName.includes("/admin/settings") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiSettings /> Settings</label></Link>
         </div>
         <hr />
         <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center mt-2 hover:bg-base-200 p-2 rounded-lg'>
