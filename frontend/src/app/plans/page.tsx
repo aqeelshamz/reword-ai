@@ -49,7 +49,7 @@ export default function Page() {
             }
         </div>
         <div className="flex justify-center my-5">
-            <button className="btn btn-primary">Checkout <FiArrowRight /></button>
+            <button className="btn btn-primary" onClick={() => window.location.href = `/plans/payment?item=${plans[selectedPlan]?._id}`}>Checkout <FiArrowRight /></button>
         </div>
     </main>
 }
