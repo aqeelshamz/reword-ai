@@ -8,6 +8,7 @@ export default function RazorpayIntegration(item: any | string) {
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.async = true;
         document.body.appendChild(script);
+        openPayModal();
     }, []);
 
     const openPayModal = async () => {
@@ -58,7 +59,6 @@ export default function RazorpayIntegration(item: any | string) {
 
     return (
         <div>
-            <button onClick={openPayModal}>Upgrade</button>
         </div>
     );
 };

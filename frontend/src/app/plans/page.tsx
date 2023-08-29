@@ -3,11 +3,12 @@ import serverURL from "@/utils/utils";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import { FiArrowRight, FiCheckCircle, FiCreditCard, FiFileText, FiType } from "react-icons/fi";
 
 export default function Page() {
     const [plans, setPlans] = useState<any[]>([]);
-    const [selectedPlan, setSelectedPlan] = React.useState(0);
+    const [selectedPlan, setSelectedPlan] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState("stripe"); // ["stripe", "razorpay"]
 
     const getPlans = async () => {
         const config = {
@@ -49,7 +50,34 @@ export default function Page() {
             }
         </div>
         <div className="flex justify-center my-5">
-            <button className="btn btn-primary" onClick={() => window.location.href = `/plans/payment?item=${plans[selectedPlan]?._id}`}>Checkout <FiArrowRight /></button>
+            <label htmlFor="paymentmethod_modal" className="btn btn-primary" >Checkout <FiArrowRight /></label>
+        </div>
+        {/* Payment Method Modal */}
+        <input type="checkbox" id="paymentmethod_modal" className="modal-toggle" />
+        <div className="modal">
+            <div className="modal-box">
+                <h3 className="flex items-center font-bold text-lg"><FiCreditCard className="mr-1" /> Select Payment Method</h3>
+                <div onClick={() => setPaymentMethod("stripe")} className={(paymentMethod === "stripe" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
+                    <div className="card-body">
+                        <h2 className="card-title">
+                            Stripe
+                        </h2>
+                    </div>
+                </div>
+                <div onClick={() => setPaymentMethod("razorpay")} className={(paymentMethod === "razorpay" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
+                    <div className="card-body">
+                        <h2 className="card-title">
+                            Razorpay
+                        </h2>
+                    </div>
+                </div>
+                <div className="modal-action mt-10">
+                    <label htmlFor="paymentmethod_modal" className="btn">Cancel</label>
+                    <label className="btn btn-primary" onClick={() => window.location.href = `/plans/payment?item=${plans[selectedPlan]?._id}&method=${paymentMethod}`}>Pay</label>
+                </div>
+            </div>
+            <label className="modal-backdrop" htmlFor="paymentmethod_modal">Cancel</label>
+            <label htmlFor="paymentmethod_modal" hidden></label>
         </div>
     </main>
 }

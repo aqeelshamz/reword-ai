@@ -38,15 +38,13 @@ export default function Page() {
     return <main className="flex flex-col w-screen h-screen bg-base-100 p-4 overflow-hidden">
         <p className="mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><span>📝 RewordAI ✨</span></Link> | Payment</p>
         <div className="w-full h-full flex items-center justify-center">
-            {
-
+            {params.get("method") === "stripe" ? clientSecret && (
+                <Elements options={options} stripe={stripePromise}>
+                    <CheckoutForm />
+                </Elements>
+            ) :
+                <RazorpayIntegration item={params.get("item")} />
             }
-            {/* {clientSecret && (
-            <Elements options={options} stripe={stripePromise}>
-                <CheckoutForm />
-            </Elements>
-            )} */}
-            <RazorpayIntegration item={params.get("item")} />
         </div>
     </main>
 }

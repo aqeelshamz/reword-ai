@@ -6,11 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { usePathname } from "next/navigation";
 
-export const metadata = {
-  title: 'RewordAI',
-  description: 'Your AI Text Rewriter',
-}
-
 export default function RootLayout({
   children,
 }: {
