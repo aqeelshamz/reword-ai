@@ -6,6 +6,8 @@ import Plan from "../models/Plan.js";
 import stripe from "stripe";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import Purchase from "../models/Purchase.js";
+import PaymentMethod from "../models/PaymentMethod.js";
 
 const instance = new Razorpay({
     key_id: "rzp_test_mCodGqhrqtU4wk",
@@ -16,7 +18,22 @@ const router = express.Router();
 const stripeObj = stripe('sk_test_51NaV1ISCTPV4jDzyit6wwYc33Pd5dXusFYmvgalXDCK5ihTi17DAoARwHf9cqBAuy7U9OPVqKyzZAi5SESANVg1900iW7vcuQm');
 
 router.get("/", validate, async (req, res) => {
-    return res.send(await Plan.find());
+    const paymentMethod = await PaymentMethod.findOne();
+    const plans = await Plan.find();
+    const paymentMethods = paymentMethod ? {
+        razorpay: paymentMethod.razorpay,
+        stripe: paymentMethod.stripe,
+    } : {
+        razorpay: true,
+        stripe: true,
+    };
+
+    const data = {
+        plans: plans,
+        paymentMethods: paymentMethods,
+    }
+
+    return res.send(data);
 });
 
 router.post("/create-payment-intent", async (req, res) => {
@@ -67,12 +84,19 @@ router.post('/payment', (req, res) => {
             transactionamount: transactionamount,
         });
 
+        const newPayment = new Purchase({
+            transactionId: transactionid,
+            amount: transactionamount,
+            userId: req.user._id,
+            planId: req.body.planId,
+        });
+
         // transaction.save((err, savedtransac) => {
-            // if (err) {
-            //     console.error(err);
-            //     return res.status(500).send('Some Problem Occurred');
-            // }
-            res.send("Success");
+        // if (err) {
+        //     console.error(err);
+        //     return res.status(500).send('Some Problem Occurred');
+        // }
+        res.send("Success");
         // });
     } else {
         res.status(400).send('Payment verification failed');

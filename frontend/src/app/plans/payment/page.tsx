@@ -3,10 +3,10 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import CheckoutForm from "./checkout_form";
+import CheckoutForm from "./stripe_form";
 import serverURL from "@/utils/utils";
 import RazorpayIntegration from "./razorpay_form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 const stripePromise = loadStripe("pk_test_51NaV1ISCTPV4jDzycVuMlryjTVFBVYpyXfZ9kM5TRZFauiRxBKB5XnYSyCU1lzllFJuN6XXzgDac907yFrkiQq9300AQLTb7c5");
 
 export default function Page() {

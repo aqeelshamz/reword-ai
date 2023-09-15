@@ -39,12 +39,8 @@ export default function Page() {
                 {/* head */}
                 <thead>
                     <tr>
-                        <th>
-                            <label>
-                                <input type="checkbox" className="checkbox" />
-                            </label>
-                        </th>
-                        <th>Name</th>
+                        <th></th>
+                        <th>User</th>
                         <th>Email</th>
                         <th>Requests</th>
                         <th>Edit</th>
@@ -55,11 +51,9 @@ export default function Page() {
                     {
                         users.map((user: any, index: number) => {
                             return <tr>
-                                <th>
-                                    <label>
-                                        <input type="checkbox" className="checkbox" />
-                                    </label>
-                                </th>
+                                <td>
+                                    {index + 1}
+                                </td>
                                 <td>
                                     <div className="flex items-center space-x-3">
                                         <div className="avatar placeholder mr-2">
