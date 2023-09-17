@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { paymentMethods } from "../utils/utils.js";
 
 const PurchaseSchema = new mongoose.Schema(
     {
@@ -17,6 +18,11 @@ const PurchaseSchema = new mongoose.Schema(
         amount: {
             type: Number,
             required: true,
+        },
+        paymentMethod: {
+            type: String,
+            required: true,
+            enum: paymentMethods
         },
     },
     { timestamps: true }

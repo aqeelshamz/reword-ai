@@ -2,4 +2,7 @@ const prompt = "You're a text rewriter. You can take a text from user and rewrit
 const tones = ["NORMAL", "CASUAL", "FORMAL", "ACADEMIC", "CREATIVE"];
 const lengths = ["SHORT", "MEDIUM", "LONG"];
 
-export { prompt, tones, lengths };
+const currency = "inr";
+const paymentMethods = ["stripe", "razorpay"];
+
+export { prompt, tones, lengths, currency, paymentMethods };

@@ -12,16 +12,23 @@ const stripePromise = loadStripe("pk_test_51NaV1ISCTPV4jDzycVuMlryjTVFBVYpyXfZ9k
 export default function Page() {
     const params = useSearchParams();
     const [clientSecret, setClientSecret] = useState("");
+    const [orderId, setOrderId] = useState("");
 
     useEffect(() => {
-        // Create PaymentIntent as soon as the page loads
-        fetch(`${serverURL}/plans/create-payment-intent`, {
+        // Create PaymentIntent as soon as the page loads (STRIPE)
+        fetch(`${serverURL}/plans/create-order-stripe`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ planId: params.get("item") }),
         })
             .then((res) => res.json())
-            .then((data) => setClientSecret(data.clientSecret));
+            .then((data) => {
+                setClientSecret(data.clientSecret);
+                setOrderId(data.orderId);
+            });
     }, []);
 
     const appearance = {
@@ -30,6 +37,7 @@ export default function Page() {
             colorPrimary: '#570df8',
         },
     };
+    
     const options: any = {
         clientSecret,
         appearance,
@@ -38,9 +46,9 @@ export default function Page() {
     return <main className="flex flex-col w-screen h-screen bg-base-100 p-4 overflow-hidden">
         <p className="mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><span>📝 RewordAI ✨</span></Link> | Payment</p>
         <div className="w-full h-full flex items-center justify-center">
-            {params.get("method") === "stripe" ? clientSecret && (
+            {params.get("method") === "stripe" ? clientSecret && orderId  && (
                 <Elements options={options} stripe={stripePromise}>
-                    <CheckoutForm />
+                    <CheckoutForm orderId={orderId} />
                 </Elements>
             ) :
                 <RazorpayIntegration item={params.get("item")} />

@@ -5,8 +5,9 @@ import {
     useStripe,
     useElements
 } from "@stripe/react-stripe-js";
+import axios from "axios";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ orderId }: { orderId: string }) {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -30,6 +31,8 @@ export default function CheckoutForm() {
         stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
             switch (paymentIntent?.status) {
                 case "succeeded":
+                    console.log("payment success: ");
+                    console.log(paymentIntent);
                     setMessage("Payment succeeded!");
                     break;
                 case "processing":
@@ -56,11 +59,23 @@ export default function CheckoutForm() {
 
         setIsLoading(true);
 
+        const config = {
+            method: 'POST',
+            url: 'http://localhost:8080/plans/verify-stripe-payment',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+            data: { orderId },
+        };
+
+        await axios(config);
+
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:3000",
+                return_url: "http://localhost:3000/plans/payment/complete",
             },
         });
 

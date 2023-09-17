@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { toast } from 'react-toastify';
 export default function RazorpayIntegration(item: any | string) {
     useEffect(() => {
         const script = document.createElement("script");
@@ -12,7 +12,18 @@ export default function RazorpayIntegration(item: any | string) {
     }, []);
 
     const openPayModal = async () => {
-        const response = await axios.post('http://localhost:8080/plans/order', { item: item });
+        const config = {
+            method: 'POST',
+            url: 'http://localhost:8080/plans/create-order-razorpay',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+            data: { planId: item.item },
+        };
+
+        const response = await axios(config);
+
         const { id: order_id, amount: order_amount } = response.data;
 
         const options = {
@@ -38,9 +49,22 @@ export default function RazorpayIntegration(item: any | string) {
                 };
 
                 try {
-                    const paymentResponse = await axios.post('http://localhost:8080/plans/payment', values);
-                    console.log(paymentResponse.data);
-                    alert('Payment successful');
+                    const config = {
+                        method: 'POST',
+                        url: 'http://localhost:8080/plans/verify-razorpay-payment',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'application/json',
+                        },
+                        data: values,
+                    };
+
+                    await axios(config);
+                    toast.success('Payment successful');
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
                 } catch (error) {
                     console.error(error);
                     alert('Payment failed');

@@ -1,13 +1,14 @@
 import express from "express";
 import joi from "joi";
 import { validate } from "../middlewares/validate.js";
-import User from "../models/User.js";
 import Plan from "../models/Plan.js";
 import stripe from "stripe";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import Purchase from "../models/Purchase.js";
 import PaymentMethod from "../models/PaymentMethod.js";
+import { currency } from "../utils/utils.js";
+import Order from "../models/Order.js";
 
 const instance = new Razorpay({
     key_id: "rzp_test_mCodGqhrqtU4wk",
@@ -36,70 +37,133 @@ router.get("/", validate, async (req, res) => {
     return res.send(data);
 });
 
-router.post("/create-payment-intent", async (req, res) => {
-    const paymentIntent = await stripeObj.paymentIntents.create({
-        amount: 1000,
-        currency: "inr",
-        automatic_payment_methods: {
-            enabled: true,
-        },
+//STRIPE
+router.post("/create-order-stripe", validate, async (req, res) => {
+    const schema = joi.object({
+        planId: joi.string().required(),
     });
 
-    console.log("paymentIntent", paymentIntent)
-    console.log("paymentIntent.id", paymentIntent.id);
+    try {
+        const data = await schema.validateAsync(req.body);
+        const plan = await Plan.findById(data.planId);
 
-    res.send({
-        clientSecret: paymentIntent.client_secret,
+        if (!plan) return res.status(400).send("Invalid Plan");
+
+        const paymentIntent = await stripeObj.paymentIntents.create({
+            amount: plan.price * 100,
+            currency: currency,
+            automatic_payment_methods: {
+                enabled: true,
+            },
+        });
+
+        await Order.findOneAndDelete({ userId: req.user._id });
+
+        const newOrder = new Order({
+            userId: req.user._id,
+            planId: data.planId,
+            orderId: paymentIntent.id,
+            amount: plan.price,
+            paymentMethod: "stripe",
+        });
+
+        await newOrder.save();
+
+        return res.send({
+            orderId: paymentIntent.id,
+            clientSecret: paymentIntent.client_secret,
+        });
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
+
+});
+
+router.post('/verify-stripe-payment', validate, async (req, res) => {
+    const { orderId } = req.body;
+
+    const order = await Order.findOne({ orderId: orderId });
+
+    if (!order) return res.status(400).send('Invalid Order');
+
+    const newPayment = new Purchase({
+        userId: req.user._id,
+        planId: order.planId,
+        transactionId: orderId,
+        paymentMethod: "stripe",
+        amount: order.amount,
     });
+
+    await newPayment.save();
+    await Order.findOneAndDelete({ orderId: orderId });
+    return res.send("Success");
 });
 
 //RAZORPAY
-router.post('/order', async (req, res) => {
+router.post('/create-order-razorpay', validate, async (req, res) => {
+    const schema = joi.object({
+        planId: joi.string().required(),
+    });
+
     try {
+        const data = await schema.validateAsync(req.body);
+        const plan = await Plan.findById(data.planId);
+
+        if (!plan) return res.status(400).send("Invalid Plan");
+
         const orderOptions = {
-            amount: 1000,
-            currency: 'INR',
+            amount: plan.price * 100,
+            currency: currency.toUpperCase(),
             receipt: 'order_rcptid_' + Math.random().toString(),
             payment_capture: 1,
         };
 
         const order = await instance.orders.create(orderOptions);
-        res.json(order);
+
+        await Order.findOneAndDelete({ userId: req.user._id });
+
+        const newOrder = new Order({
+            userId: req.user._id,
+            planId: data.planId,
+            orderId: order.id,
+            amount: order.amount / 100,
+            paymentMethod: "razorpay",
+        });
+
+        await newOrder.save();
+
+        return res.json(order);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to create order' });
+        console.log(error)
+        return res.status(500).json({ error: 'Failed to create order' });
     }
 });
 
-router.post('/payment', (req, res) => {
-    console.log(req.body)
+router.post('/verify-razorpay-payment', validate, async (req, res) => {
     const { razorpay_order_id, transactionid, razorpay_signature, transactionamount } = req.body;
     const generated_signature = crypto.createHmac('sha256', "Sj6z2mGVQmEyy4Ez70GFkNxT")
         .update(razorpay_order_id + '|' + transactionid)
         .digest('hex');
 
     if (generated_signature === razorpay_signature) {
-        console.log("NEW PAYMENT (TO SAVE IN DB)", {
-            transactionid: transactionid,
-            transactionamount: transactionamount,
-        });
+        const order = await Order.findOne({ orderId: razorpay_order_id });
+
+        if (!order) return res.status(400).send('Invalid Order');
 
         const newPayment = new Purchase({
+            userId: req.user._id,
+            planId: order.planId,
             transactionId: transactionid,
             amount: transactionamount,
-            userId: req.user._id,
-            planId: req.body.planId,
+            paymentMethod: "razorpay",
         });
 
-        // transaction.save((err, savedtransac) => {
-        // if (err) {
-        //     console.error(err);
-        //     return res.status(500).send('Some Problem Occurred');
-        // }
-        res.send("Success");
-        // });
+        await newPayment.save();
+        await Order.findOneAndDelete({ orderId: razorpay_order_id });
+        return res.send("Success");
     } else {
-        res.status(400).send('Payment verification failed');
+        return res.status(400).send('Payment verification failed');
     }
 });
 
