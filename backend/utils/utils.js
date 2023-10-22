@@ -4,5 +4,6 @@ const lengths = ["SHORT", "MEDIUM", "LONG"];
 
 const currency = "inr";
 const paymentMethods = ["stripe", "razorpay"];
+const freePlanRewriteCount = 100;
 
-export { prompt, tones, lengths, currency, paymentMethods };
+export { prompt, tones, lengths, currency, paymentMethods, freePlanRewriteCount };

@@ -1,13 +1,27 @@
 import express from "express";
 import joi from "joi";
-import { lengths, prompt, tones } from "../utils/utils.js";
+import { freePlanRewriteCount, lengths, prompt, tones } from "../utils/utils.js";
 import { Configuration, OpenAIApi } from "openai";
 import { validate } from "../middlewares/validate.js";
+import Rewrites from "../models/Rewrites.js";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
     res.send("Reword");
+});
+
+router.get("/rewrites", validate, async (req, res) => {
+    const rewrites = await Rewrites.findOne({ userId: req.user._id });
+    if (!rewrites) {
+        const newRewrites = new Rewrites({
+            userId: req.user._id,
+            rewrites: freePlanRewriteCount,
+        });
+        await newRewrites.save();
+        return res.send(newRewrites);
+    }
+    return res.send(rewrites);
 });
 
 router.post("/rewrite", validate, async (req, res) => {
@@ -26,6 +40,20 @@ router.post("/rewrite", validate, async (req, res) => {
 
     try {
         const data = await schema.validateAsync(req.body);
+
+        const rewrites = await Rewrites.findOne({ userId: req.user._id });
+        if (!rewrites) {
+            const newRewrites = new Rewrites({
+                userId: req.user._id,
+                rewrites: freePlanRewriteCount,
+            });
+            await newRewrites.save();
+        }
+
+        if (rewrites.rewrites < data.rewrites) return res.status(400).send("Rewrites limit exceeded");
+
+        await Rewrites.findOneAndUpdate({ userId: req.user._id }, { $inc: { rewrites: -data.rewrites } });
+
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
@@ -37,6 +65,7 @@ router.post("/rewrite", validate, async (req, res) => {
         return res.send(JSON.parse(completion.data.choices[0].message.content));
     }
     catch (err) {
+        console.log(err)
         return res.status(500).send(err);
     }
 });

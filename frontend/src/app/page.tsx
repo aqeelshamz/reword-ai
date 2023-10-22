@@ -178,6 +178,26 @@ export default function Home() {
     }
   }
 
+  const [rewriteCount, setRewriteCount] = useState<number>(-1);
+
+  const getRewrites = async () => {
+    const config = {
+      method: "GET",
+      url: `${serverURL}/rewordai/rewrites`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setRewriteCount(response.data.rewrites);
+      })
+      .catch((error) => {
+        toast.error("Something went wrong!");
+      });
+  }
+
   const rewrite = async () => {
     if (text.length < 3 || loading) return;
 
@@ -202,6 +222,7 @@ export default function Home() {
         setLoading(false);
         setRewrites(response.data);
         rewritesModalRef.current?.click();
+        getRewrites();
       })
       .catch((error) => {
         setLoading(false);
@@ -277,6 +298,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    getRewrites();
     getDocuments();
 
     document.addEventListener("keydown", handleKeyDown);
@@ -462,6 +484,7 @@ export default function Home() {
               </ul>
             </details>
           </div>
+          {rewriteCount !== -1 ? <p className="mt-3 text-sm text-gray-500">{rewriteCount} rewrites left</p> : ""}
         </div>}
         <label htmlFor='newdocument_modal' className='sm:hidden absolute right-5 bottom-5 btn btn-primary btn-square'><FiPlus /></label>
         {selectedDocument === -1 ? <button className='sm:hidden absolute left-5 top-5 btn btn-square' onClick={() => setShowMenu(!showMenu)}><FiMenu /></button> : ""}
