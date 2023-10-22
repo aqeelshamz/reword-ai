@@ -6,4 +6,8 @@ const currency = "inr";
 const paymentMethods = ["stripe", "razorpay"];
 const freePlanRewriteCount = 100;
 
-export { prompt, tones, lengths, currency, paymentMethods, freePlanRewriteCount };
+const stripeKey = "sk_test_51NaV1ISCTPV4jDzyit6wwYc33Pd5dXusFYmvgalXDCK5ihTi17DAoARwHf9cqBAuy7U9OPVqKyzZAi5SESANVg1900iW7vcuQm";
+const razorpayKeyId = "rzp_test_mCodGqhrqtU4wk";
+const razorpayKeySecret = "Sj6z2mGVQmEyy4Ez70GFkNxT";
+
+export { prompt, tones, lengths, currency, paymentMethods, freePlanRewriteCount, stripeKey, razorpayKeyId, razorpayKeySecret };

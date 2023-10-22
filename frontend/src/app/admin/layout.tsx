@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { FiCreditCard, FiDollarSign, FiGift, FiHome, FiLogOut, FiMoreHorizontal, FiSettings, FiUser, FiUsers } from "react-icons/fi";
+import { FiCreditCard, FiDollarSign, FiGift, FiHome, FiLogOut, FiMoreHorizontal, FiSettings, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { usePathname } from "next/navigation";
@@ -31,7 +31,7 @@ export default function RootLayout({
         </div>
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
           <Link href="/admin/dashboard"><label className={(!pathName.includes("/admin/dashboard") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiHome /> Dashboard</label></Link>
-          <Link href="/admin/plans"><label className={(!pathName.includes("/admin/plans") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiGift /> Plans</label></Link>
+          <Link href="/admin/shop"><label className={(!pathName.includes("/admin/shop") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiShoppingCart /> Shop</label></Link>
           <Link href="/admin/purchases"><label className={(!pathName.includes("/admin/purchases") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiDollarSign /> Purchases</label></Link>
           <Link href="/admin/payment_methods"><label className={(!pathName.includes("/admin/payment_methods") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiCreditCard /> Payment methods</label></Link>
           <Link href="/admin/users"><label className={(!pathName.includes("/admin/users") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiUsers /> Users</label></Link>

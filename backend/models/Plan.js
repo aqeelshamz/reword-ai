@@ -30,7 +30,7 @@ const PlanSchema = new mongoose.Schema(
         type: {
             type: Number,
             required: true,
-            enum: [0, 1, 2, 3], // 0: free, 1: monthly, 2: yearly, 3: lifetime
+            enum: [0, 1], // 0: free, 1: paid
         }
     },
     { timestamps: true }

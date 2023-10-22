@@ -75,7 +75,7 @@ export default function CheckoutForm({ orderId }: { orderId: string }) {
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:3000/plans/payment/complete",
+                return_url: "http://localhost:3000/shop/payment/complete",
             },
         });
 

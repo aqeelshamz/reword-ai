@@ -7,16 +7,17 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import Purchase from "../models/Purchase.js";
 import PaymentMethod from "../models/PaymentMethod.js";
-import { currency } from "../utils/utils.js";
+import { currency, razorpayKeyId, razorpayKeySecret, stripeKey } from "../utils/utils.js";
 import Order from "../models/Order.js";
+import Rewrites from "../models/Rewrites.js";
 
 const instance = new Razorpay({
-    key_id: "rzp_test_mCodGqhrqtU4wk",
-    key_secret: "Sj6z2mGVQmEyy4Ez70GFkNxT",
+    key_id: razorpayKeyId,
+    key_secret: razorpayKeySecret,
 });
 
 const router = express.Router();
-const stripeObj = stripe('sk_test_51NaV1ISCTPV4jDzyit6wwYc33Pd5dXusFYmvgalXDCK5ihTi17DAoARwHf9cqBAuy7U9OPVqKyzZAi5SESANVg1900iW7vcuQm');
+const stripeObj = stripe(stripeKey);
 
 router.get("/", validate, async (req, res) => {
     const paymentMethod = await PaymentMethod.findOne();
@@ -37,7 +38,7 @@ router.get("/", validate, async (req, res) => {
     return res.send(data);
 });
 
-//STRIPE
+//CREATE ORDER (STRIPE)
 router.post("/create-order-stripe", validate, async (req, res) => {
     const schema = joi.object({
         planId: joi.string().required(),
@@ -80,27 +81,7 @@ router.post("/create-order-stripe", validate, async (req, res) => {
 
 });
 
-router.post('/verify-stripe-payment', validate, async (req, res) => {
-    const { orderId } = req.body;
-
-    const order = await Order.findOne({ orderId: orderId });
-
-    if (!order) return res.status(400).send('Invalid Order');
-
-    const newPayment = new Purchase({
-        userId: req.user._id,
-        planId: order.planId,
-        transactionId: orderId,
-        paymentMethod: "stripe",
-        amount: order.amount,
-    });
-
-    await newPayment.save();
-    await Order.findOneAndDelete({ orderId: orderId });
-    return res.send("Success");
-});
-
-//RAZORPAY
+//CREATE ORDER (RAZORPAY)
 router.post('/create-order-razorpay', validate, async (req, res) => {
     const schema = joi.object({
         planId: joi.string().required(),
@@ -140,6 +121,32 @@ router.post('/create-order-razorpay', validate, async (req, res) => {
     }
 });
 
+//COMPLETE PURCHASE (STRIPE)
+router.post('/verify-stripe-payment', validate, async (req, res) => {
+    const { orderId } = req.body;
+
+    const order = await Order.findOne({ orderId: orderId });
+
+    if (!order) return res.status(400).send('Invalid Order');
+
+    const newPurchase = new Purchase({
+        userId: req.user._id,
+        planId: order.planId,
+        transactionId: orderId,
+        paymentMethod: "stripe",
+        amount: order.amount,
+    });
+
+    const plan = await Plan.findById(order.planId);
+
+    await Rewrites.findOneAndUpdate({ userId: req.user._id }, { $inc: { rewrites: plan.rewriteLimit } });
+
+    await newPurchase.save();
+    await Order.findOneAndDelete({ orderId: orderId });
+    return res.send("Success");
+});
+
+//COMPLETE PURCHASE (RAZORPAY)
 router.post('/verify-razorpay-payment', validate, async (req, res) => {
     const { razorpay_order_id, transactionid, razorpay_signature, transactionamount } = req.body;
     const generated_signature = crypto.createHmac('sha256', "Sj6z2mGVQmEyy4Ez70GFkNxT")
@@ -151,7 +158,7 @@ router.post('/verify-razorpay-payment', validate, async (req, res) => {
 
         if (!order) return res.status(400).send('Invalid Order');
 
-        const newPayment = new Purchase({
+        const newPurchase = new Purchase({
             userId: req.user._id,
             planId: order.planId,
             transactionId: transactionid,
@@ -159,8 +166,13 @@ router.post('/verify-razorpay-payment', validate, async (req, res) => {
             paymentMethod: "razorpay",
         });
 
-        await newPayment.save();
+        const plan = await Plan.findById(order.planId);
+
+        await Rewrites.findOneAndUpdate({ userId: req.user._id }, { $inc: { rewrites: plan.rewriteLimit } });
+
+        await newPurchase.save();
         await Order.findOneAndDelete({ orderId: razorpay_order_id });
+
         return res.send("Success");
     } else {
         return res.status(400).send('Payment verification failed');

@@ -32,7 +32,7 @@ export default function Page() {
     }, []);
 
     return <main className="flex flex-col w-screen h-screen bg-base-100 p-4 overflow-hidden">
-        <p className="mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><span>📝 RewordAI ✨</span></Link> | Plans</p>
+        <p className="mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><span>📝 RewordAI ✨</span></Link> | Shop</p>
         <div className="animate-fade-in-bottom w-full h-full flex items-center justify-center flex-wrap overflow-y-auto">
             {
                 plans.map((plan: any, i: number) => {
@@ -40,10 +40,10 @@ export default function Page() {
                         <div className="card-body">
                             <h2 className="card-title">
                                 {plan?.title}
-                                <div className="badge badge-secondary">{["Free", "Monthly", "Yearly", "Lifetime"][plan?.type]}</div>
+                                <div className="badge badge-secondary">{["Free", "Paid"][plan?.type]}</div>
                                 {!plan?.enable ? <div className="badge badge-ghost">Disabled</div> : ""}
                             </h2>
-                            <p className="font-semibold text-4xl mb-4">${plan?.price}<span className="text-sm">{["", " / Month", " / Year", " / Lifetime"][plan?.type].toLowerCase()}</span></p>
+                            <p className="font-semibold text-4xl mb-4">${plan?.price}</p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.rewriteLimit} rewrites</p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.ads ? "Shows Ads" : "No Ads"}</p>
                         </div>
@@ -75,7 +75,7 @@ export default function Page() {
                 </div> : ""}
                 <div className="modal-action mt-10">
                     <label htmlFor="paymentmethod_modal" className="btn">Cancel</label>
-                    <label className="btn btn-primary" onClick={() => window.location.href = `/plans/payment?item=${plans[selectedPlan]?._id}&method=${paymentMethod}`}>Pay</label>
+                    <label className="btn btn-primary" onClick={() => window.location.href = `/shop/payment?item=${plans[selectedPlan]?._id}&method=${paymentMethod}`}>Pay</label>
                 </div>
             </div>
             <label className="modal-backdrop" htmlFor="paymentmethod_modal">Cancel</label>

@@ -3,7 +3,7 @@ import serverURL from '@/utils/utils';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiCreditCard, FiDollarSign, FiGift, FiHome, FiUser, FiUsers } from 'react-icons/fi';
+import { FiCreditCard, FiDollarSign, FiHome, FiShoppingCart, FiUsers } from 'react-icons/fi';
 
 export default function Page() {
     const adminPath = "/admin";
@@ -53,9 +53,9 @@ export default function Page() {
                     <p className="text-xl text-[#091B59] font-semibold opacity-50">Purchases</p>
                 </div>
             </Link>
-            <Link href={`${adminPath}/plans`}>
+            <Link href={`${adminPath}/shop`}>
                 <div className="bg-[#ffd4d4] select-none hover:scale-105 cursor-pointer duration-100 w-64 min-h-[200px] rounded-lg flex flex-col items-center justify-center mr-5 sm:mb-5">
-                    <FiGift className="text-[#091B59] text-6xl my-5" />
+                    <FiShoppingCart className="text-[#091B59] text-6xl my-5" />
                     <p className="text-3xl text-[#091B59] font-bold">{data?.plans}</p>
                     <p className="text-xl text-[#091B59] font-semibold opacity-50">Plans</p>
                 </div>

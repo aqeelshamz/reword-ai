@@ -2,7 +2,7 @@
 import serverURL from '@/utils/utils';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiDollarSign, FiEdit, FiFile, FiGift, FiMonitor, FiPlus, FiTrash, FiType } from 'react-icons/fi';
+import { FiCheckCircle, FiDollarSign, FiEdit, FiFile, FiMonitor, FiPlus, FiShoppingCart, FiTrash, FiType } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
 export default function Page() {
@@ -137,7 +137,7 @@ export default function Page() {
     }, []);
 
     return <div className='animate-fade-in-bottom w-full h-full p-4'>
-        <p className='font-semibold text-xl flex items-center mb-4'><FiGift className='mr-2' /> Plans</p>
+        <p className='font-semibold text-xl flex items-center mb-4'><FiShoppingCart className='mr-2' /> Shop</p>
         <div className='w-full flex flex-wrap'>
             {
                 plans.map((plan, i) => {
@@ -145,10 +145,10 @@ export default function Page() {
                         <div className="card-body">
                             <h2 className="card-title">
                                 {plan?.title}
-                                <div className="badge badge-secondary">{["Free", "Monthly", "Yearly", "Lifetime"][plan?.type]}</div>
+                                <div className="badge badge-secondary">{["Free", "Paid"][plan?.type]}</div>
                                 {!plan?.enable ? <div className="badge badge-ghost">Disabled</div> : ""}
                             </h2>
-                            <p className="font-semibold text-4xl mb-4">${plan?.price}<span className="text-sm">{["", " / Month", " / Year", " / Lifetime"][plan?.type].toLowerCase()}</span></p>
+                            <p className="font-semibold text-4xl mb-4">${plan?.price}</p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.rewriteLimit} rewrites</p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.ads ? "Shows Ads" : "No Ads"}</p>
                             <div className="card-actions justify-end">
@@ -176,7 +176,7 @@ export default function Page() {
         <input type="checkbox" id="newplan_modal" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <h3 className="flex items-center font-bold text-lg"><FiGift className="mr-1" /> New Plan</h3>
+                <h3 className="flex items-center font-bold text-lg"><FiShoppingCart className="mr-1" /> New Plan</h3>
                 <p className="flex items-center py-4"><FiType className='mr-2' />Title</p>
                 <input className="input input-bordered w-full" placeholder="Plan title" type="text" onChange={(x) => setTitle(x.target.value)} value={title} />
                 <p className="flex items-center py-4"><FiEdit className='mr-2' />Rewrite Limit</p>
@@ -192,9 +192,7 @@ export default function Page() {
                 <p className="flex items-center py-4"><FiFile className='mr-2' />Type</p>
                 <div className='flex flex-wrap'>
                     <button onClick={() => setType(0)} className={(type === 0 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Free</button>
-                    <button onClick={() => setType(1)} className={(type === 1 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Monthly</button>
-                    <button onClick={() => setType(2)} className={(type === 2 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Yearly</button>
-                    <button onClick={() => setType(3)} className={(type === 3 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Lifetime</button>
+                    <button onClick={() => setType(1)} className={(type === 1 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Paid</button>
                 </div>
                 <div className="modal-action">
                     <label htmlFor="newplan_modal" className="btn">Cancel</label>
@@ -228,9 +226,7 @@ export default function Page() {
                 <p className="flex items-center py-4"><FiFile className='mr-2' />Type</p>
                 <div className='flex flex-wrap'>
                     <button onClick={() => setType(0)} className={(type === 0 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Free</button>
-                    <button onClick={() => setType(1)} className={(type === 1 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Monthly</button>
-                    <button onClick={() => setType(2)} className={(type === 2 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Yearly</button>
-                    <button onClick={() => setType(3)} className={(type === 3 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Lifetime</button>
+                    <button onClick={() => setType(1)} className={(type === 1 ? "btn-primary" : "") + ' btn btn-sm mr-2'}>Paid</button>
                 </div>
                 <div className="modal-action">
                     <label htmlFor="editplan_modal" className="btn">Cancel</label>
