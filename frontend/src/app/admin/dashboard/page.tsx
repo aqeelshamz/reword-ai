@@ -1,5 +1,5 @@
 "use client";
-import serverURL from '@/utils/utils';
+import { currencySymbol, serverURL } from "@/utils/utils";
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -41,8 +41,8 @@ export default function Page() {
             <Link href={`${adminPath}/purchases`}>
                 <div className="bg-[#D2E8FD] select-none hover:scale-105 cursor-pointer duration-100 w-64 min-h-[200px] rounded-lg flex flex-col items-center justify-center mr-5 sm:mb-5">
                     <FiDollarSign className="text-[#091B59] text-6xl my-5" />
-                    <p className="text-3xl text-[#091B59] font-bold">{data?.earnings}</p>
-                    <p className="text-xl text-[#091B59] font-semibold opacity-50">Earnings</p>
+                    <p className="text-3xl text-[#091B59] font-bold">{currencySymbol} {data?.earnings}</p>
+                    <p className="text-xl text-[#091B59] font-semibold opacity-50">Total Earnings</p>
                 </div>
             </Link>
             <Link href={`${adminPath}/purchases`}>

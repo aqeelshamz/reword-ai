@@ -1,3 +1,4 @@
 const serverURL = "http://localhost:8080"
+const currencySymbol = "₹";
 
-export default serverURL;
+export { serverURL, currencySymbol };

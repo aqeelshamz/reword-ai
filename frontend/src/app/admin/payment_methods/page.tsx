@@ -1,5 +1,5 @@
 "use client";
-import serverURL from '@/utils/utils';
+import { serverURL } from "@/utils/utils";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FiCheckCircle, FiCreditCard, FiDownload, FiXCircle } from 'react-icons/fi';
@@ -27,7 +27,7 @@ export default function Page() {
             })
     }
 
-    const saveData = async (data:PaymentMethodData) => {
+    const saveData = async (data: PaymentMethodData) => {
         const config = {
             method: "POST",
             url: `${serverURL}/admin/payment-methods`,
@@ -69,7 +69,7 @@ export default function Page() {
                                 ...data!,
                                 stripe: !data?.stripe
                             });
-                            saveData({razorpay: data?.razorpay!, stripe: !data?.stripe!});
+                            saveData({ razorpay: data?.razorpay!, stripe: !data?.stripe! });
                         }} checked={data?.stripe} /></td>
                     </tr>
                     {/* row 2 */}
@@ -81,7 +81,7 @@ export default function Page() {
                                 ...data!,
                                 razorpay: !data?.razorpay
                             });
-                            saveData({razorpay: !data?.razorpay!, stripe: data?.stripe!});
+                            saveData({ razorpay: !data?.razorpay!, stripe: data?.stripe! });
                         }} checked={data?.razorpay} /></td>
                     </tr>
                 </tbody>

@@ -1,5 +1,5 @@
 "use client";
-import serverURL from "@/utils/utils";
+import { serverURL } from "@/utils/utils";
 import axios from "axios";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";

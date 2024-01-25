@@ -1,5 +1,5 @@
 "use client";
-import serverURL from '@/utils/utils';
+import { serverURL } from "@/utils/utils";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FiCheckCircle, FiDollarSign, FiEdit, FiFile, FiMonitor, FiPlus, FiShoppingCart, FiTrash, FiType } from 'react-icons/fi';
