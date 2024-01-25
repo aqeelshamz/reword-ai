@@ -1,10 +1,10 @@
 "use client";
-import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
+import Link from 'next/link'
+import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { appName, serverURL } from '@/utils/utils';
-import { useEffect, useState } from 'react';
-import Link from 'next/link'
-import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Home() {
     const [theme, setTheme] = useState<null | any | string>(

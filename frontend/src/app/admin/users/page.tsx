@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { FiUser, FiUsers } from 'react-icons/fi';
-import { serverURL } from '../../../utils/utils';
-import { toast } from 'react-toastify';
-import Link from 'next/link';
 import axios from "axios";
+import Link from 'next/link';
+import { toast } from 'react-toastify';
+import { serverURL } from '../../../utils/utils';
+import { FiUser, FiUsers } from 'react-icons/fi';
+import React, { useEffect, useState } from 'react';
 
 export default function Page() {
     const [users, setUsers] = useState([]);

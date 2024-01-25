@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
     PaymentElement,
     LinkAuthenticationElement,
     useStripe,
     useElements
 } from "@stripe/react-stripe-js";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export default function CheckoutForm({ orderId }: { orderId: string }) {
     const stripe = useStripe();

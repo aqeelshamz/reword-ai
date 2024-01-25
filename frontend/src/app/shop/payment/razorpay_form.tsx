@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect } from 'react';
-import { toast } from 'react-toastify';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import React, { useEffect } from 'react';
 
 export default function RazorpayIntegration(item: any | string) {
     useEffect(() => {

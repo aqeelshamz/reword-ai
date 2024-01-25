@@ -1,11 +1,11 @@
 "use client";
-import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiLogOut, FiCopy, FiMoon, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowRight, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
-import { ToastContainer, toast } from "react-toastify";
-import { useRef, useState, useEffect } from "react";
+import axios from "axios";
+import Link from "next/link";
 import 'react-toastify/dist/ReactToastify.css';
 import { appName, serverURL } from "@/utils/utils";
-import Link from "next/link";
-import axios from "axios";
+import { useRef, useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiLogOut, FiCopy, FiMoon, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowRight, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
 
 export default function Home() {
   const [text, setText] = useState<string>("");

@@ -1,12 +1,12 @@
 "use client";
-import { appName, serverURL, stripeKey } from "@/utils/utils";
-import { Elements } from "@stripe/react-stripe-js";
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import CheckoutForm from "./stripe_form";
+import { loadStripe } from "@stripe/stripe-js";
 import RazorpayIntegration from "./razorpay_form";
 import { useSearchParams } from "next/navigation";
-import { loadStripe } from "@stripe/stripe-js";
-import CheckoutForm from "./stripe_form";
-import Link from "next/link";
+import { Elements } from "@stripe/react-stripe-js";
+import React, { useEffect, useState } from "react";
+import { appName, serverURL, stripeKey } from "@/utils/utils";
 
 const stripePromise = loadStripe(stripeKey);
 

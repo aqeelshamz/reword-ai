@@ -1,12 +1,12 @@
 "use client";
-import { FiArrowLeft, FiCreditCard, FiDollarSign, FiHome, FiLogOut, FiMoreHorizontal, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
-import React, { useEffect, useState } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { usePathname } from "next/navigation";
-import { appName, serverURL } from '@/utils/utils';
-import Link from 'next/link';
 import axios from 'axios';
+import Link from 'next/link';
+import { usePathname } from "next/navigation";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import { appName, serverURL } from '@/utils/utils';
+import React, { useEffect, useState } from 'react';
+import { FiArrowLeft, FiCreditCard, FiDollarSign, FiHome, FiLogOut, FiMoreHorizontal, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
 
 export default function RootLayout({
   children,

@@ -1,6 +1,6 @@
-import { Golos_Text } from 'next/font/google'
-import { appName } from '@/utils/utils'
 import './globals.css'
+import { appName } from '@/utils/utils'
+import { Golos_Text } from 'next/font/google'
 
 const golos = Golos_Text({
   weight: '400',

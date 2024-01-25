@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { FiCreditCard } from 'react-icons/fi';
-import { serverURL } from "@/utils/utils";
 import axios from 'axios';
+import { serverURL } from "@/utils/utils";
+import { FiCreditCard } from 'react-icons/fi';
+import React, { useEffect, useState } from 'react';
 
 export default function Page() {
     type PaymentMethodData = {
