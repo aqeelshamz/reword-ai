@@ -7,14 +7,14 @@ import { FiArrowRight, FiCheckCircle, FiCreditCard, FiFileText, FiType } from "r
 
 export default function Page() {
     const [paymentMethods, setPaymentMethods] = useState<any>();
-    const [plans, setPlans] = useState<any[]>([]);
-    const [selectedPlan, setSelectedPlan] = useState(0);
+    const [items, setItems] = useState<any[]>([]);
+    const [selectedItem, setSelectedItem] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState("stripe"); // ["stripe", "razorpay"]
 
-    const getPlans = async () => {
+    const getItems = async () => {
         const config = {
             method: "GET",
-            url: `${serverURL}/plans`,
+            url: `${serverURL}/shop`,
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
             },
@@ -22,37 +22,36 @@ export default function Page() {
 
         axios(config)
             .then((response) => {
-                setPlans(response.data.plans);
+                setItems(response.data.items);
                 setPaymentMethods(response.data.paymentMethods);
             })
     }
 
     useEffect(() => {
-        getPlans();
+        getItems();
     }, []);
 
     return <main className="flex flex-col w-screen h-screen bg-base-100 p-4 overflow-hidden">
         <p className="mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><span>📝 RewordAI ✨</span></Link> | Shop</p>
         <div className="animate-fade-in-bottom w-full h-full flex items-center justify-center flex-wrap overflow-y-auto">
             {
-                plans.map((plan: any, i: number) => {
-                    return <div key={i} onClick={() => setSelectedPlan(i)} className={(selectedPlan === i ? "border-primary " : "") + "cursor-pointer border-2 select-none card w-96 bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 mb-5"}>
+                items.map((item: any, i: number) => {
+                    return <div key={i} onClick={() => setSelectedItem(i)} className={(selectedItem === i ? "border-primary " : "") + "cursor-pointer border-2 select-none card w-96 bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 mb-5"}>
                         <div className="card-body">
                             <h2 className="card-title">
-                                {plan?.title}
-                                <div className="badge badge-secondary">{["Free", "Paid"][plan?.type]}</div>
-                                {!plan?.enable ? <div className="badge badge-ghost">Disabled</div> : ""}
+                                {item?.title}
+                                <div className="badge badge-secondary">{["Free", "Paid"][item?.type]}</div>
+                                {!item?.enable ? <div className="badge badge-ghost">Disabled</div> : ""}
                             </h2>
-                            <p className="font-semibold text-4xl mb-4">${plan?.price}</p>
-                            <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.rewriteLimit} rewrites</p>
-                            <p className='flex items-center'><FiCheckCircle className='mr-2' />{plan?.ads ? "Shows Ads" : "No Ads"}</p>
+                            <p className="font-semibold text-4xl mb-4">${item?.price}</p>
+                            <p className='flex items-center'><FiCheckCircle className='mr-2' />{item?.rewriteLimit} rewrites</p>
                         </div>
                     </div>
                 })
             }
         </div>
         {!paymentMethods?.razorpay && !paymentMethods?.stripe ? <p className="text-center mb-10 text-red-600">No payment method available</p> : <div className="flex justify-center my-5">
-            <label htmlFor="paymentmethod_modal" className="btn btn-primary" >Checkout <FiArrowRight /></label>
+            <label htmlFor="paymentmethod_modal" className="btn btn-primary" >Buy Now <FiArrowRight /></label>
         </div>}
         {/* Payment Method Modal */}
         <input type="checkbox" id="paymentmethod_modal" className="modal-toggle" />
@@ -75,7 +74,7 @@ export default function Page() {
                 </div> : ""}
                 <div className="modal-action mt-10">
                     <label htmlFor="paymentmethod_modal" className="btn">Cancel</label>
-                    <label className="btn btn-primary" onClick={() => window.location.href = `/shop/payment?item=${plans[selectedPlan]?._id}&method=${paymentMethod}`}>Pay</label>
+                    <label className="btn btn-primary" onClick={() => window.location.href = `/shop/payment?item=${items[selectedItem]?._id}&method=${paymentMethod}`}>Pay</label>
                 </div>
             </div>
             <label className="modal-backdrop" htmlFor="paymentmethod_modal">Cancel</label>

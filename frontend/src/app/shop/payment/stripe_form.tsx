@@ -61,7 +61,7 @@ export default function CheckoutForm({ orderId }: { orderId: string }) {
 
         const config = {
             method: 'POST',
-            url: 'http://localhost:8080/plans/verify-stripe-payment',
+            url: 'http://localhost:8080/shop/verify-stripe-payment',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',

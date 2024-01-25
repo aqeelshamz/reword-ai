@@ -14,44 +14,43 @@ export default function RazorpayIntegration(item: any | string) {
     const openPayModal = async () => {
         const config = {
             method: 'POST',
-            url: 'http://localhost:8080/plans/create-order-razorpay',
+            url: 'http://localhost:8080/shop/create-order-razorpay',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',
             },
-            data: { planId: item.item },
+            data: { itemId: item.item },
         };
 
         const response = await axios(config);
 
-        const { id: order_id, amount: order_amount } = response.data;
+        const orderData = response.data;
 
         const options = {
-            key: "rzp_test_mCodGqhrqtU4wk",
-            amount: order_amount,
-            currency: 'INR',
-            name: 'Merchant Name',
-            description: 'Payment for upgrade',
-            order_id: order_id,
+            key: orderData.key,
+            amount: orderData.amount,
+            currency: orderData.currency,
+            name: orderData.name,
+            description: orderData.description,
+            order_id: orderData.order_id,
             prefill: {
-                name: 'Sanjana Kumari',
-                email: 'sanjana@gmail.com',
-                contact: '1234567890',
+                name: orderData.prefill.name,
+                email: orderData.prefill.email,
             },
             handler: async (response: any) => {
                 const { razorpay_signature, razorpay_payment_id } = response;
 
                 const values = {
                     razorpay_signature,
-                    razorpay_order_id: order_id,
+                    razorpay_order_id: orderData.order_id,
                     transactionid: razorpay_payment_id,
-                    transactionamount: order_amount,
+                    transactionamount: orderData.amount,
                 };
 
                 try {
                     const config = {
                         method: 'POST',
-                        url: 'http://localhost:8080/plans/verify-razorpay-payment',
+                        url: 'http://localhost:8080/shop/verify-razorpay-payment',
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`,
                             'Content-Type': 'application/json',
@@ -70,9 +69,7 @@ export default function RazorpayIntegration(item: any | string) {
                     alert('Payment failed');
                 }
             },
-            theme: {
-                color: '#528ff0',
-            },
+            theme: orderData.theme,
         };
 
         if (typeof window !== 'undefined') {

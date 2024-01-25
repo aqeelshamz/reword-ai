@@ -57,7 +57,7 @@ export default function Page() {
                 <div className="bg-[#ffd4d4] select-none hover:scale-105 cursor-pointer duration-100 w-64 min-h-[200px] rounded-lg flex flex-col items-center justify-center mr-5 sm:mb-5">
                     <FiShoppingCart className="text-[#091B59] text-6xl my-5" />
                     <p className="text-3xl text-[#091B59] font-bold">{data?.plans}</p>
-                    <p className="text-xl text-[#091B59] font-semibold opacity-50">Plans</p>
+                    <p className="text-xl text-[#091B59] font-semibold opacity-50">Shop</p>
                 </div>
             </Link>
             <Link href={`${adminPath}/users`}>

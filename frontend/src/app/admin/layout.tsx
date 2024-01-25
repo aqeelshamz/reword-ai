@@ -35,7 +35,7 @@ export default function RootLayout({
           <Link href="/admin/purchases"><label className={(!pathName.includes("/admin/purchases") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiDollarSign /> Purchases</label></Link>
           <Link href="/admin/payment_methods"><label className={(!pathName.includes("/admin/payment_methods") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiCreditCard /> Payment methods</label></Link>
           <Link href="/admin/users"><label className={(!pathName.includes("/admin/users") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiUsers /> Users</label></Link>
-          <Link href="/admin/settings"><label className={(!pathName.includes("/admin/settings") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiSettings /> Settings</label></Link>
+          {/* <Link href="/admin/settings"><label className={(!pathName.includes("/admin/settings") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiSettings /> Settings</label></Link> */}
         </div>
         <hr />
         <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center mt-2 hover:bg-base-200 p-2 rounded-lg'>

@@ -16,13 +16,13 @@ export default function Page() {
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads (STRIPE)
-        fetch(`${serverURL}/plans/create-order-stripe`, {
+        fetch(`${serverURL}/shop/create-order-stripe`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ planId: params.get("item") }),
+            body: JSON.stringify({ itemId: params.get("item") }),
         })
             .then((res) => res.json())
             .then((data) => {
