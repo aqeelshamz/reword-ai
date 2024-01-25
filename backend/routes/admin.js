@@ -4,6 +4,8 @@ import { validateAdmin } from "../middlewares/validate.js";
 import User from "../models/User.js";
 import Item from "../models/Item.js";
 import PaymentMethod from "../models/PaymentMethod.js";
+import Purchase from "../models/Purchase.js";
+import Rewrites from "../models/Rewrites.js";
 
 const router = express.Router();
 
@@ -15,18 +17,23 @@ router.get("/", validateAdmin, async (req, res) => {
 router.get("/dashboard", validateAdmin, async (req, res) => {
     const users = await User.find().countDocuments();
     const items = await Item.find().countDocuments();
-    const purchases = 0;
-    const earnings = 0;
+    const purchasesData = await Purchase.find();
+    const purchases = purchasesData.length;
+    var earnings = 0;
+    for (const purchase of purchasesData) {
+        earnings += purchase.amount;
+    }
+
     return res.send({ users, items, purchases, earnings });
 });
 //DASHBOARD END
 
-//PLANS START
-router.get("/items", validateAdmin, async (req, res) => {
+//SHOP START
+router.get("/shop", validateAdmin, async (req, res) => {
     return res.send((await Item.find()).reverse());
 });
 
-router.post("/items/create", validateAdmin, async (req, res) => {
+router.post("/shop/create", validateAdmin, async (req, res) => {
     const schema = joi.object({
         title: joi.string().required(),
         rewriteLimit: joi.number().required().min(1),
@@ -53,7 +60,7 @@ router.post("/items/create", validateAdmin, async (req, res) => {
     }
 });
 
-router.post("/items/edit", validateAdmin, async (req, res) => {
+router.post("/shop/edit", validateAdmin, async (req, res) => {
     const schema = joi.object({
         itemId: joi.string().required(),
         enable: joi.boolean().required(),
@@ -81,7 +88,7 @@ router.post("/items/edit", validateAdmin, async (req, res) => {
     }
 });
 
-router.post("/items/delete", validateAdmin, async (req, res) => {
+router.post("/shop/delete", validateAdmin, async (req, res) => {
     const schema = joi.object({
         itemId: joi.string().required(),
     });
@@ -97,7 +104,7 @@ router.post("/items/delete", validateAdmin, async (req, res) => {
         return res.status(500).send(err);
     }
 });
-//PLANS END
+//SHOP END
 
 //PAYMENT METHODS START
 router.get("/payment-methods", validateAdmin, async (req, res) => {
@@ -154,7 +161,24 @@ router.post("/payment-methods", validateAdmin, async (req, res) => {
 
 //USERS START
 router.get("/users", validateAdmin, async (req, res) => {
-    return res.send((await User.find().select("-password")).reverse());
+    const users = (await User.find().select("-password")).reverse();
+
+    var usersData = [];
+    for(const user of users){
+        const rewrites = await Rewrites.findOne({ userId: user._id });
+        const purchases = await Purchase.find({ userId: user._id });
+
+        usersData.push({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            type: user.type,
+            rewrites: rewrites ? rewrites.rewrites : 0,
+            purchases: purchases.length,
+        });
+    }
+
+    return res.send(usersData);
 });
 //USERS END
 
@@ -163,5 +187,30 @@ router.get("/settings", validateAdmin, async (req, res) => {
     return res.send("Users");
 });
 //SETTINGS END
+
+//PURCHASES START
+router.get("/purchases", validateAdmin, async (req, res) => {
+    const purchases = (await Purchase.find()).reverse();
+
+    var purchasesData = [];
+
+    for(const purchase of purchases){
+        const user = await User.findById(purchase.userId);
+        const item = await Item.findById(purchase.itemId);
+
+        purchasesData.push({
+            _id: purchase._id,
+            user: user.name,
+            email: user.email,
+            item: item.title,
+            amount: purchase.amount,
+            paymentMethod: purchase.paymentMethod,
+            date: purchase.createdAt.toLocaleString().split(",")[0]
+        });
+    }
+
+    return res.send(purchasesData);
+});
+//PURCHASES END
 
 export default router;

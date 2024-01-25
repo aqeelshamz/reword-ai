@@ -41,6 +41,26 @@ router.get("/", validate, async (req, res) => {
     return res.send(data);
 });
 
+router.get("/purchases", validate, async (req, res) => {
+    const purchases = (await Purchase.find()).reverse();
+
+    var purchasesData = [];
+
+    for (const purchase of purchases) {
+        const item = await Item.findById(purchase.itemId);
+
+        purchasesData.push({
+            _id: purchase._id,
+            item: item.title,
+            amount: purchase.amount,
+            paymentMethod: purchase.paymentMethod,
+            date: purchase.createdAt.toLocaleString().split(",")[0]
+        });
+    }
+
+    return res.send(purchasesData);
+})
+
 //CREATE ORDER (STRIPE)
 router.post("/create-order-stripe", validate, async (req, res) => {
     const schema = joi.object({
