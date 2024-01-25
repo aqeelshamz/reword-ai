@@ -28,11 +28,13 @@ router.post("/signup", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
+        const users = await User.find();
+
         const newUser = new User({
             name: data.name,
             email: data.email,
             password: hashedPassword,
-            type: "user",
+            type: users.length == 0 ? "admin" : "user",
         });
 
         const savedUser = await newUser.save();
