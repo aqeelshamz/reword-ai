@@ -6,11 +6,7 @@ const currency = "inr";
 const paymentMethods = ["stripe", "razorpay"];
 const freeItemRewriteCount = 100;
 
-const stripeKey = "sk_test_51NaV1ISCTPV4jDzyit6wwYc33Pd5dXusFYmvgalXDCK5ihTi17DAoARwHf9cqBAuy7U9OPVqKyzZAi5SESANVg1900iW7vcuQm";
-const razorpayKeyId = "rzp_test_VvCXnFgWdy3i3B";
-const razorpayKeySecret = "C1gWEJI3C6EptxV2AN6ta8HV";
-
 const merchantName = "RewordAI";
 const razorpayThemeColor = "#528ff0";
 
-export { merchantName, prompt, tones, lengths, currency, paymentMethods, freeItemRewriteCount, stripeKey, razorpayKeyId, razorpayKeySecret, razorpayThemeColor };
+export { merchantName, prompt, tones, lengths, currency, paymentMethods, freeItemRewriteCount, razorpayThemeColor };

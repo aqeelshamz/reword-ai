@@ -7,17 +7,20 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import Purchase from "../models/Purchase.js";
 import PaymentMethod from "../models/PaymentMethod.js";
-import { currency, merchantName, razorpayKeyId, razorpayKeySecret, razorpayThemeColor, stripeKey } from "../utils/utils.js";
+import { currency, merchantName, razorpayThemeColor } from "../utils/utils.js";
 import Order from "../models/Order.js";
 import Rewrites from "../models/Rewrites.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const instance = new Razorpay({
-    key_id: razorpayKeyId,
-    key_secret: razorpayKeySecret,
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 const router = express.Router();
-const stripeObj = stripe(stripeKey);
+const stripeObj = stripe(process.env.STRIPE_SECRET_KEY);
 
 router.get("/", validate, async (req, res) => {
     const paymentMethod = await PaymentMethod.findOne();
