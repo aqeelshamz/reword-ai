@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { FiEdit, FiTrash, FiUser, FiUsers } from 'react-icons/fi';
-import serverURL from '../../../utils/utils';
+import { serverURL } from '../../../utils/utils';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -42,9 +42,8 @@ export default function Page() {
                         <th></th>
                         <th>User</th>
                         <th>Email</th>
-                        <th>Requests</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>Rewrites Left</th>
+                        <th>Purchases</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,13 +68,8 @@ export default function Page() {
                                 <td>
                                     <Link href={`mailto:${user?.email}`} target='_blank' className='underline'>{user?.email}</Link>
                                 </td>
-                                <td>{user?.requests}</td>
-                                <th>
-                                    <button className="btn btn-ghost btn-md"><FiEdit /></button>
-                                </th>
-                                <th>
-                                    <button className="btn btn-ghost hover:btn-error btn-md"><FiTrash /></button>
-                                </th>
+                                <td>{user?.rewrites}</td>
+                                <td>{user?.purchases}</td>
                             </tr>
                         })
                     }

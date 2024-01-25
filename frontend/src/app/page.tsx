@@ -3,7 +3,7 @@ import { serverURL } from "@/utils/utils";
 import axios from "axios";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
-import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowUpLeft, FiArrowUpRight, FiArrowRight, FiGift, FiShoppingCart } from "react-icons/fi";
+import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowUpLeft, FiArrowUpRight, FiArrowRight, FiGift, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -411,6 +411,7 @@ export default function Home() {
           <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mb-2">
             <label htmlFor='settings_modal'><li className='flex'><p><FiSettings />Settings</p></li></label>
             <Link href="/shop"><label><li className='flex'><p><FiShoppingCart />Shop</p></li></label></Link>
+            <Link href="/purchases"><label><li className='flex'><p><FiShoppingBag />My Purchases</p></li></label></Link>
             <hr className='my-2' />
             <li className='flex' onClick={() => {
               localStorage.clear()

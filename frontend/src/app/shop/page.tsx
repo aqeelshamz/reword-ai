@@ -3,7 +3,7 @@ import { serverURL } from "@/utils/utils";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiArrowRight, FiCheckCircle, FiCreditCard, FiFileText, FiType } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiCreditCard, FiFileText, FiShoppingCart, FiType } from "react-icons/fi";
 
 export default function Page() {
     const [paymentMethods, setPaymentMethods] = useState<any>();
@@ -32,7 +32,7 @@ export default function Page() {
     }, []);
 
     return <main className="flex flex-col w-screen h-screen bg-base-100 p-4 overflow-hidden">
-        <p className="mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><span>📝 RewordAI ✨</span></Link> | Shop</p>
+        <p className="flex items-center mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><FiArrowLeft className="mr-5" /></Link> <FiShoppingCart className="mr-2" /> Shop</p>
         <div className="animate-fade-in-bottom w-full h-full flex items-center justify-center flex-wrap overflow-y-auto">
             {
                 items.map((item: any, i: number) => {

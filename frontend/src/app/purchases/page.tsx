@@ -1,9 +1,9 @@
 "use client";
-import { currencySymbol, serverURL } from '@/utils/utils';
-import axios from 'axios';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiDollarSign, FiDownload, FiXCircle } from 'react-icons/fi';
+import { currencySymbol, serverURL } from "@/utils/utils";
+import axios from "axios";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { FiArrowLeft, FiDownload, FiShoppingBag } from "react-icons/fi";
 
 export default function Page() {
     const [data, setData] = useState([]);
@@ -11,7 +11,7 @@ export default function Page() {
     const getData = async () => {
         const config = {
             method: "GET",
-            url: `${serverURL}/admin/purchases`,
+            url: `${serverURL}/shop/purchases`,
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
             },
@@ -27,8 +27,8 @@ export default function Page() {
         getData();
     }, []);
 
-    return <div className='animate-fade-in-bottom w-full h-full p-4'>
-        <p className='font-semibold text-xl flex items-center'><FiDollarSign className='mr-2' /> Purchases</p>
+    return <main className="flex flex-col w-screen h-screen bg-base-100 p-4 overflow-hidden">
+        <p className="flex items-center mb-5 font-semibold text-2xl max-sm:mb-3"><Link href="/"><FiArrowLeft className="mr-5" /></Link> <FiShoppingBag className="mr-2" /> My Purchases</p>
         <div className="overflow-x-auto">
             <table className="table">
                 {/* head */}
@@ -36,8 +36,6 @@ export default function Page() {
                     <tr>
                         <th></th>
                         <th>Purchase Date</th>
-                        <th>User</th>
-                        <th>Email</th>
                         <th>Item</th>
                         <th>Total Price</th>
                         <th>Payment Method</th>
@@ -50,10 +48,6 @@ export default function Page() {
                             return <tr className='hover'>
                                 <th>1</th>
                                 <td>{item?.date}</td>
-                                <td>{item?.user}</td>
-                                <td>
-                                    <Link href={`mailto:${item?.email}`} target='_blank' className='underline'>{item?.email}</Link>
-                                </td>
                                 <td>{item?.item}</td>
                                 <td>{currencySymbol} {item?.amount}</td>
                                 <td>{item?.paymentMethod}</td>
@@ -64,5 +58,7 @@ export default function Page() {
                 </tbody>
             </table>
         </div>
-    </div>
+    </main>
 }
+
+
