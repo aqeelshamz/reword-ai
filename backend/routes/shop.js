@@ -178,7 +178,7 @@ router.post('/create-order-razorpay', validate, async (req, res) => {
         const orderData = await newOrder.save();
 
         const resData = {
-            key: razorpayKeyId,
+            key: process.env.RAZORPAY_KEY_ID,
             amount: orderData.amount,
             currency: currency.toUpperCase(),
             name: merchantName,
@@ -195,6 +195,7 @@ router.post('/create-order-razorpay', validate, async (req, res) => {
 
         return res.json(resData);
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ error: 'Failed to create order' });
     }
 });
@@ -227,7 +228,7 @@ router.post('/verify-stripe-payment', validate, async (req, res) => {
 //COMPLETE PURCHASE (RAZORPAY)
 router.post('/verify-razorpay-payment', validate, async (req, res) => {
     const { razorpay_order_id, transactionid, razorpay_signature, transactionamount } = req.body;
-    const generated_signature = crypto.createHmac('sha256', razorpayKeySecret)
+    const generated_signature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
         .update(razorpay_order_id + '|' + transactionid)
         .digest('hex');
 

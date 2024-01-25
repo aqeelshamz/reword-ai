@@ -1,9 +1,20 @@
 import joi from "joi";
 import express from "express";
 import Rewrites from "../models/Rewrites.js";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import { validate } from "../middlewares/validate.js";
 import { freeItemRewriteCount, lengths, prompt, tones } from "../utils/utils.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+const rewriteModel = "gpt-3.5-turbo";
+const completionModel = "gpt-3.5-turbo-instruct";
+const tokenLengths = [100, 200, 300];
 
 const router = express.Router();
 
@@ -25,12 +36,6 @@ router.get("/rewrites", validate, async (req, res) => {
 });
 
 router.post("/rewrite", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
         tone: joi.number().required().min(0).max(4),
@@ -54,43 +59,39 @@ router.post("/rewrite", validate, async (req, res) => {
 
         await Rewrites.findOneAndUpdate({ userId: req.user._id }, { $inc: { rewrites: -data.rewrites } });
 
-        const completion = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
+        const completion = await openai.chat.completions.create({
+            model: rewriteModel,
             messages: [
                 { "role": "system", "content": prompt },
                 { "role": "user", "content": `{\"text\": \"${data.text}\", \"tone\": \"${tones[data.tone]}\", \"length\": \"${lengths[data.length]}\", \"rewrites\": \"${data.rewrites}\"}` }
             ],
         });
 
-        return res.send(JSON.parse(completion.data.choices[0].message.content));
+        return res.send(JSON.parse(completion.choices[0].message.content));
     }
     catch (err) {
+        console.log(err)
         return res.status(500).send(err);
     }
 });
 
 router.post("/continue-writing", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Continue writing: \"${data.text}\"`,
-            max_tokens: 500,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(data.text + response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(data.text + response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -98,27 +99,22 @@ router.post("/continue-writing", validate, async (req, res) => {
 });
 
 router.post("/explain", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Explain: \"${data.text}\"`,
-            max_tokens: 250,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(data.text + response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(data.text + response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -126,27 +122,22 @@ router.post("/explain", validate, async (req, res) => {
 });
 
 router.post("/give-example", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Give an example for : \"${data.text}\"`,
-            max_tokens: 250,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(data.text + response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(data.text + response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -154,27 +145,22 @@ router.post("/give-example", validate, async (req, res) => {
 });
 
 router.post("/counterargument", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Counterargument for : \"${data.text}\"`,
-            max_tokens: 250,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(data.text + response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(data.text + response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -182,27 +168,22 @@ router.post("/counterargument", validate, async (req, res) => {
 });
 
 router.post("/define", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Define : \"${data.text}\"`,
-            max_tokens: 250,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(data.text + response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(data.text + response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -210,27 +191,22 @@ router.post("/define", validate, async (req, res) => {
 });
 
 router.post("/shorten", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Shorten this : \"${data.text}\"`,
-            max_tokens: 100,
+            max_tokens: 200,
             temperature: 0,
         });
 
-        return res.send(response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -238,27 +214,22 @@ router.post("/shorten", validate, async (req, res) => {
 });
 
 router.post("/expand", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Expand this : \"${data.text}\"`,
-            max_tokens: 250,
+            max_tokens: 400,
             temperature: 0,
         });
 
-        return res.send(response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -266,27 +237,22 @@ router.post("/expand", validate, async (req, res) => {
 });
 
 router.post("/summarise", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         text: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: `Summarise this : \"${data.text}\"`,
-            max_tokens: 250,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(response.data.choices[0].text.replaceAll("\n", " "));
+        return res.send(response.choices[0].text.replaceAll("\n", " "));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -294,27 +260,22 @@ router.post("/summarise", validate, async (req, res) => {
 });
 
 router.post("/generate-text-with-ai", validate, async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const openai = new OpenAIApi(configuration);
-
     const schema = joi.object({
         prompt: joi.string().required(),
+        length: joi.number().required().min(0).max(2),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
 
-        const response = await openai.createCompletion({
-            model: "text-davinci-003",
+        const response = await openai.completions.create({
+            model: completionModel,
             prompt: data.prompt,
-            max_tokens: 500,
+            max_tokens: tokenLengths[data.length],
             temperature: 0,
         });
 
-        return res.send(response.data.choices[0].text);
+        return res.send(response.choices[0].text);
     }
     catch (err) {
         return res.status(500).send(err);
