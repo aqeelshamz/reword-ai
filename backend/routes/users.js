@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { validate } from "../middlewares/validate.js";
 import Rewrites from "../models/Rewrites.js";
-import { freePlanRewriteCount } from "../utils/utils.js";
+import { freeItemRewriteCount } from "../utils/utils.js";
 
 const router = express.Router();
 
@@ -39,7 +39,7 @@ router.post("/signup", async (req, res) => {
 
         const rewrites = new Rewrites({
             userId: savedUser._id,
-            rewrites: freePlanRewriteCount,
+            rewrites: freeItemRewriteCount,
         });
 
         await rewrites.save();

@@ -4,10 +4,13 @@ const lengths = ["SHORT", "MEDIUM", "LONG"];
 
 const currency = "inr";
 const paymentMethods = ["stripe", "razorpay"];
-const freePlanRewriteCount = 100;
+const freeItemRewriteCount = 100;
 
 const stripeKey = "sk_test_51NaV1ISCTPV4jDzyit6wwYc33Pd5dXusFYmvgalXDCK5ihTi17DAoARwHf9cqBAuy7U9OPVqKyzZAi5SESANVg1900iW7vcuQm";
-const razorpayKeyId = "rzp_test_mCodGqhrqtU4wk";
-const razorpayKeySecret = "Sj6z2mGVQmEyy4Ez70GFkNxT";
+const razorpayKeyId = "rzp_test_VvCXnFgWdy3i3B";
+const razorpayKeySecret = "C1gWEJI3C6EptxV2AN6ta8HV";
 
-export { prompt, tones, lengths, currency, paymentMethods, freePlanRewriteCount, stripeKey, razorpayKeyId, razorpayKeySecret };
+const merchantName = "RewordAI";
+const razorpayThemeColor = "#528ff0";
+
+export { merchantName, prompt, tones, lengths, currency, paymentMethods, freeItemRewriteCount, stripeKey, razorpayKeyId, razorpayKeySecret, razorpayThemeColor };

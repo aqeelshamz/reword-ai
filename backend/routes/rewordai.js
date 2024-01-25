@@ -1,6 +1,6 @@
 import express from "express";
 import joi from "joi";
-import { freePlanRewriteCount, lengths, prompt, tones } from "../utils/utils.js";
+import { freeItemRewriteCount, lengths, prompt, tones } from "../utils/utils.js";
 import { Configuration, OpenAIApi } from "openai";
 import { validate } from "../middlewares/validate.js";
 import Rewrites from "../models/Rewrites.js";
@@ -16,7 +16,7 @@ router.get("/rewrites", validate, async (req, res) => {
     if (!rewrites) {
         const newRewrites = new Rewrites({
             userId: req.user._id,
-            rewrites: freePlanRewriteCount,
+            rewrites: freeItemRewriteCount,
         });
         await newRewrites.save();
         return res.send(newRewrites);
@@ -45,7 +45,7 @@ router.post("/rewrite", validate, async (req, res) => {
         if (!rewrites) {
             const newRewrites = new Rewrites({
                 userId: req.user._id,
-                rewrites: freePlanRewriteCount,
+                rewrites: freeItemRewriteCount,
             });
             await newRewrites.save();
         }

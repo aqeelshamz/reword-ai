@@ -2,7 +2,7 @@ import express from "express";
 import joi from "joi";
 import { validateAdmin } from "../middlewares/validate.js";
 import User from "../models/User.js";
-import Plan from "../models/Plan.js";
+import Item from "../models/Item.js";
 import PaymentMethod from "../models/PaymentMethod.js";
 
 const router = express.Router();
@@ -14,65 +14,61 @@ router.get("/", validateAdmin, async (req, res) => {
 //DASHBOARD START
 router.get("/dashboard", validateAdmin, async (req, res) => {
     const users = await User.find().countDocuments();
-    const plans = await Plan.find().countDocuments();
+    const items = await Item.find().countDocuments();
     const purchases = 0;
     const earnings = 0;
-    return res.send({ users, plans, purchases, earnings });
+    return res.send({ users, items, purchases, earnings });
 });
 //DASHBOARD END
 
 //PLANS START
-router.get("/plans", validateAdmin, async (req, res) => {
-    return res.send((await Plan.find()).reverse());
+router.get("/items", validateAdmin, async (req, res) => {
+    return res.send((await Item.find()).reverse());
 });
 
-router.post("/plans/create", validateAdmin, async (req, res) => {
+router.post("/items/create", validateAdmin, async (req, res) => {
     const schema = joi.object({
         title: joi.string().required(),
         rewriteLimit: joi.number().required().min(1),
-        ads: joi.boolean().required(),
         price: joi.number().required().min(0),
         type: joi.number().required().min(0).max(3), // 0 = free, 1 = monthly, 2 = yearly, 3 = lifetime
     });
 
     try {
         const data = await schema.validateAsync(req.body);
-        const newPlan = new Plan({
+        const newItem = new Item({
             enable: true,
             userId: req.user._id,
             title: data.title,
             rewriteLimit: data.rewriteLimit,
-            ads: data.ads,
             price: data.price,
             type: data.type,
         });
 
-        await newPlan.save();
-        return res.send(newPlan);
+        await newItem.save();
+        return res.send(newItem);
     }
     catch (err) {
         return res.status(500).send(err);
     }
 });
 
-router.post("/plans/edit", validateAdmin, async (req, res) => {
+router.post("/items/edit", validateAdmin, async (req, res) => {
     const schema = joi.object({
-        planId: joi.string().required(),
+        itemId: joi.string().required(),
         enable: joi.boolean().required(),
         title: joi.string().required(),
         rewriteLimit: joi.number().required().min(1),
-        ads: joi.boolean().required(),
         price: joi.number().required().min(0),
         type: joi.number().required().min(0).max(3), // 0 = free, 1 = monthly, 2 = yearly, 3 = lifetime
     });
 
     try {
         const data = await schema.validateAsync(req.body);
-        await Plan.findOneAndUpdate({ _id: data.planId, userId: req.user._id }, {
+        await Item.findOneAndUpdate({ _id: data.itemId, userId: req.user._id }, {
             enable: data.enable,
             title: data.title,
             rewriteLimit: data.rewriteLimit,
-            ads: data.ads,
             price: data.price,
             type: data.type,
         });
@@ -85,14 +81,14 @@ router.post("/plans/edit", validateAdmin, async (req, res) => {
     }
 });
 
-router.post("/plans/delete", validateAdmin, async (req, res) => {
+router.post("/items/delete", validateAdmin, async (req, res) => {
     const schema = joi.object({
-        planId: joi.string().required(),
+        itemId: joi.string().required(),
     });
 
     try {
         const data = await schema.validateAsync(req.body);
-        await Plan.findByIdAndDelete(data.planId);
+        await Item.findByIdAndDelete(data.itemId);
 
         return res.send("Deleted!");
     }

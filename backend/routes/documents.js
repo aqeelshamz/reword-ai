@@ -3,19 +3,14 @@ import joi from "joi";
 import { validate } from "../middlewares/validate.js";
 import Document from "../models/Document.js";
 import Purchase from "../models/Purchase.js";
-import Plan from "../models/Plan.js";
+import Item from "../models/Item.js";
 
 const router = express.Router();
 
 router.get("/list", validate, async (req, res) => {
     const documents = (await Document.find({ userId: req.user._id })).reverse();
-    const purchase = await Purchase.findOne({ userId: req.user._id });
-    var plan;
-    if (purchase) {
-        plan = await Plan.findById(purchase.planId);
-    }
 
-    res.send({ user: { name: req.user.name, email: req.user.email, type: req.user.type }, plan: plan ? plan.title.toUpperCase() : "FREE PLAN", documents: documents });
+    res.send({ user: { name: req.user.name, email: req.user.email, type: req.user.type }, documents: documents });
 });
 
 router.post("/by-id", validate, async (req, res) => {

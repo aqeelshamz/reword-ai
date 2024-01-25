@@ -7,7 +7,7 @@ const PurchaseSchema = new mongoose.Schema(
             type: mongoose.Schema.ObjectId,
             required: true
         },
-        planId: {
+        itemId: {
             type: mongoose.Schema.ObjectId,
             required: true
         },

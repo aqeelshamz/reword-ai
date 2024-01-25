@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const PlanSchema = new mongoose.Schema(
+const ItemSchema = new mongoose.Schema(
     {
         enable: {
             type: Boolean,
@@ -19,10 +19,6 @@ const PlanSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        ads: {
-            type: Boolean,
-            required: true,
-        },
         price: {
             type: Number,
             required: true,
@@ -36,6 +32,6 @@ const PlanSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Plan = mongoose.model("Plan", PlanSchema);
+const Item = mongoose.model("Item", ItemSchema);
 
-export default Plan;
+export default Item;
