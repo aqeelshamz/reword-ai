@@ -1,13 +1,14 @@
-import './globals.css'
 import { Golos_Text } from 'next/font/google'
- 
+import { appName } from '@/utils/utils'
+import './globals.css'
+
 const golos = Golos_Text({
   weight: '400',
   subsets: ['latin'],
 })
 
 export const metadata = {
-  title: 'RewordAI',
+  title: appName,
   description: 'Your AI Textewriter',
 }
 

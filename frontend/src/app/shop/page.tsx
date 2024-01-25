@@ -1,9 +1,9 @@
 "use client";
+import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiCreditCard, FiShoppingCart } from "react-icons/fi";
 import { currencySymbol, serverURL } from "@/utils/utils";
-import axios from "axios";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiCreditCard, FiFileText, FiShoppingCart, FiType } from "react-icons/fi";
+import Link from "next/link";
+import axios from "axios";
 
 export default function Page() {
     const [paymentMethods, setPaymentMethods] = useState<any>();

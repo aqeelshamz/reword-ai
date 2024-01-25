@@ -1,9 +1,9 @@
 "use client";
 import { currencySymbol, serverURL } from '@/utils/utils';
-import axios from 'axios';
-import Link from 'next/link';
+import { FiDollarSign, FiDownload } from 'react-icons/fi';
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiDollarSign, FiDownload, FiXCircle } from 'react-icons/fi';
+import Link from 'next/link';
+import axios from 'axios';
 
 export default function Page() {
     const [data, setData] = useState([]);
@@ -31,7 +31,6 @@ export default function Page() {
         <p className='font-semibold text-xl flex items-center'><FiDollarSign className='mr-2' /> Purchases</p>
         <div className="overflow-x-auto">
             <table className="table">
-                {/* head */}
                 <thead>
                     <tr>
                         <th></th>

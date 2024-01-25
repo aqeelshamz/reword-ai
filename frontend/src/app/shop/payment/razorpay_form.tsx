@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+
 export default function RazorpayIntegration(item: any | string) {
     useEffect(() => {
         const script = document.createElement("script");

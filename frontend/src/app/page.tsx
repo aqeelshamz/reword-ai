@@ -1,11 +1,11 @@
 "use client";
-import { serverURL } from "@/utils/utils";
-import axios from "axios";
-import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
-import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiCpu, FiLogOut, FiCopy, FiMoon, FiImage, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowUpLeft, FiArrowUpRight, FiArrowRight, FiGift, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
+import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiLogOut, FiCopy, FiMoon, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowRight, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
+import { useRef, useState, useEffect } from "react";
 import 'react-toastify/dist/ReactToastify.css';
+import { appName, serverURL } from "@/utils/utils";
+import Link from "next/link";
+import axios from "axios";
 
 export default function Home() {
   const [text, setText] = useState<string>("");
@@ -357,7 +357,7 @@ export default function Home() {
       {/* Sidebar */}
       <div className={'flex flex-col p-5 min-w-[275px] max-w-[15vw] h-full rounded-md ' + (!showMenu ? "max-sm:hidden " : "max-sm:fixed max-sm:w-full max-sm:h-full max-sm:max-w-none bg-base-100 max-sm:z-50 ")}>
         <div className="flex justify-between items-center max-sm:mb-4">
-          <p className="mb-5 font-semibold max-sm:mb-3">📝 RewordAI ✨<Link href="/shop"></Link></p>
+          <p className="mb-5 font-semibold max-sm:mb-3">📝 {appName} ✨<Link href="/shop"></Link></p>
           <div className="hidden max-sm:flex justify-end mb-3">
             <button className="btn btn-square btn-sm" onClick={() => setShowMenu(false)}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -423,7 +423,7 @@ export default function Home() {
       {/* Main */}
       <div className='flex flex-col items-center justify-center ml-2 p-5 border-base-300 border-[1px] w-full h-full rounded-lg 2xl:items-center max-sm:ml-0 max-sm:border-none max-sm:p-2 max-sm:items-start max-sm:justify-start'>
         {(loadingDocument || creatingDocument) ? <div className="flex items-center"><span className="loading loading-spinner mr-4"></span><p>{loadingDocument ? "Loading" : "Creating"} Document...</p></div> : selectedDocument === -1 ? <div className='select-none flex flex-col justify-center items-center w-full h-full'>
-          <p className='text-5xl font-semibold mb-2'>📝 RewordAI ✨</p>
+          <p className='text-5xl font-semibold mb-2'>📝 {appName} ✨</p>
           <p className='text-center'>Create a new document or select an existing document to start rewriting!</p>
           <div className='flex flex-wrap justify-center mt-7'>
             <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>

@@ -1,8 +1,8 @@
 "use client";
+import React, { useEffect, useState } from 'react';
+import { FiCreditCard } from 'react-icons/fi';
 import { serverURL } from "@/utils/utils";
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiCreditCard, FiDownload, FiXCircle } from 'react-icons/fi';
 
 export default function Page() {
     type PaymentMethodData = {
@@ -51,7 +51,6 @@ export default function Page() {
         <p className='font-semibold text-xl flex items-center'><FiCreditCard className='mr-2' /> Payment methods</p>
         <div className="overflow-x-auto">
             <table className="table">
-                {/* head */}
                 <thead>
                     <tr>
                         <th></th>
@@ -60,7 +59,6 @@ export default function Page() {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* row 1 */}
                     <tr className='hover'>
                         <th>1</th>
                         <td>Stripe</td>

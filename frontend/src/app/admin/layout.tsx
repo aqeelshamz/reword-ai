@@ -1,12 +1,12 @@
 "use client";
-import Link from 'next/link';
+import { FiArrowLeft, FiCreditCard, FiDollarSign, FiHome, FiLogOut, FiMoreHorizontal, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
 import React, { useEffect, useState } from 'react';
-import { FiArrowLeft, FiCreditCard, FiDollarSign, FiGift, FiHome, FiLogOut, FiMoreHorizontal, FiSettings, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
-import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { usePathname } from "next/navigation";
+import { appName, serverURL } from '@/utils/utils';
+import Link from 'next/link';
 import axios from 'axios';
-import { serverURL } from '@/utils/utils';
 
 export default function RootLayout({
   children,
@@ -45,7 +45,7 @@ export default function RootLayout({
       {/* Sidebar */}
       <div className={'flex flex-col p-5 min-w-[275px] max-w-[15vw] h-full rounded-md ' + (!showMenu ? "max-sm:hidden " : "max-sm:fixed max-sm:w-full max-sm:h-full max-sm:max-w-none bg-base-100 max-sm:z-50 ")}>
         <div className="flex justify-between items-center max-sm:mb-4">
-          <Link href="/"><p className="mb-5 font-semibold max-sm:mb-3">📝 RewordAI ✨ | Admin</p></Link>
+          <Link href="/"><p className="mb-5 font-semibold max-sm:mb-3">📝 {appName} ✨ | Admin</p></Link>
           <div className="hidden max-sm:flex justify-end mb-3">
             <button className="btn btn-square btn-sm" onClick={() => setShowMenu(false)}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -58,7 +58,6 @@ export default function RootLayout({
           <Link href="/admin/purchases"><label className={(!pathName.includes("/admin/purchases") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiDollarSign /> Purchases</label></Link>
           <Link href="/admin/payment_methods"><label className={(!pathName.includes("/admin/payment_methods") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiCreditCard /> Payment methods</label></Link>
           <Link href="/admin/users"><label className={(!pathName.includes("/admin/users") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiUsers /> Users</label></Link>
-          {/* <Link href="/admin/settings"><label className={(!pathName.includes("/admin/settings") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiSettings /> Settings</label></Link> */}
         </div>
         <hr />
         <Link href="/"><label className='btn mb-2 mt-4 w-full'><FiArrowLeft /> GO BACK TO USER</label></Link>

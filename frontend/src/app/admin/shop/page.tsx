@@ -1,9 +1,9 @@
 "use client";
+import { FiCheckCircle, FiDollarSign, FiEdit, FiFile, FiPlus, FiShoppingCart, FiTrash, FiType } from 'react-icons/fi';
 import { currencySymbol, serverURL } from "@/utils/utils";
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiDollarSign, FiEdit, FiFile, FiMonitor, FiPlus, FiShoppingCart, FiTrash, FiType } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function Page() {
     const [items, setItems] = useState<any[]>([]);

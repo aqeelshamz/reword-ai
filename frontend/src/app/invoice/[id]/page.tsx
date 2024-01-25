@@ -1,10 +1,9 @@
 "use client";
 import { appName, currencySymbol, serverURL } from "@/utils/utils";
-import axios from "axios";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { FiArrowLeft, FiFileText } from "react-icons/fi";
 import React, { useEffect, useState } from "react";
-import { FiArrowLeft, FiDownload, FiFileText, FiShoppingBag } from "react-icons/fi";
+import { useParams } from "next/navigation";
+import axios from "axios";
 
 export default function Page() {
     const { id } = useParams();
@@ -79,5 +78,3 @@ export default function Page() {
         </div>
     </main>
 }
-
-

@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { FiEdit, FiTrash, FiUser, FiUsers } from 'react-icons/fi';
+import { FiUser, FiUsers } from 'react-icons/fi';
 import { serverURL } from '../../../utils/utils';
-import axios from "axios";
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import axios from "axios";
 
 export default function Page() {
     const [users, setUsers] = useState([]);
@@ -36,7 +36,6 @@ export default function Page() {
         <p className='font-semibold text-xl flex items-center'><FiUsers className='mr-2' /> Users</p>
         <div className="overflow-x-auto">
             <table className="table">
-                {/* head */}
                 <thead>
                     <tr>
                         <th></th>

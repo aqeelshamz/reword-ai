@@ -1,9 +1,9 @@
 "use client";
-import { currencySymbol, serverURL } from "@/utils/utils";
-import axios from "axios";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import { FiArrowLeft, FiDownload, FiShoppingBag } from "react-icons/fi";
+import { currencySymbol, serverURL } from "@/utils/utils";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import axios from "axios";
 
 export default function Page() {
     const [data, setData] = useState([]);
