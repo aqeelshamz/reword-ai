@@ -364,7 +364,6 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {user?.type === "admin" ? <Link href="/admin/dashboard"><label className='btn mb-2 w-full'><FiUser /> ADMIN PANEL <FiArrowRight /></label></Link> : ""}
         <label className='btn btn-primary' htmlFor='newdocument_modal' onClick={() => setNewDocumentTitle("")}><FiPlus /> NEW DOCUMENT</label>
         <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
           {
@@ -392,8 +391,12 @@ export default function Home() {
           }
         </div>
         <hr />
-        
-        <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center mt-2 hover:bg-base-200 p-2 rounded-lg'>
+        <div className="flex items-center justify-between my-4">
+          <p>{rewriteCount} rewrites left</p>
+          <Link href="/shop"><button className="btn btn-sm"><FiShoppingCart /> SHOP</button></Link>
+        </div>
+        {user?.type === "admin" ? <Link href="/admin/dashboard"><label className='btn mb-2 w-full'><FiUser /> ADMIN PANEL <FiArrowRight /></label></Link> : ""}
+        <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center hover:bg-base-200 p-2 rounded-lg'>
           <div className='flex items-center justify-between w-full'>
             <div className='flex items-center'>
               <div className="avatar placeholder mr-2">
