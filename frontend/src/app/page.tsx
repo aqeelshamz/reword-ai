@@ -242,6 +242,7 @@ export default function Home() {
       },
       data: {
         text: text,
+        length: length,
       }
     };
 

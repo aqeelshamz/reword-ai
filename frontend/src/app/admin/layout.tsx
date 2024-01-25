@@ -60,7 +60,7 @@ export default function RootLayout({
           <Link href="/admin/users"><label className={(!pathName.includes("/admin/users") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiUsers /> Users</label></Link>
         </div>
         <hr />
-        <Link href="/"><label className='btn mb-2 mt-4 w-full'><FiArrowLeft /> GO BACK TO USER</label></Link>
+        <Link href="/"><label className='btn mb-2 mt-4 w-full'><FiArrowLeft /> USER HOME</label></Link>
         <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center hover:bg-base-200 p-2 rounded-lg'>
           <div className='flex items-center justify-between w-full'>
             <div className='flex items-center'>
