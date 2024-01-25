@@ -7,10 +7,11 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import Purchase from "../models/Purchase.js";
 import PaymentMethod from "../models/PaymentMethod.js";
-import { currency, merchantName, razorpayThemeColor } from "../utils/utils.js";
+import { currency, merchantAddress, merchantName, razorpayThemeColor } from "../utils/utils.js";
 import Order from "../models/Order.js";
 import Rewrites from "../models/Rewrites.js";
 import dotenv from "dotenv";
+import User from "../models/User.js";
 
 dotenv.config();
 
@@ -59,6 +60,45 @@ router.get("/purchases", validate, async (req, res) => {
     }
 
     return res.send(purchasesData);
+})
+
+router.post("/invoice", validate, async (req, res) => {
+    const schema = joi.object({
+        purchaseId: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+
+        const purchase = await Purchase.findById(data.purchaseId);
+        const item = await Item.findById(purchase.itemId);
+        const user = await User.findById(purchase.userId);
+
+        if (req.user.type != "admin" && req.user._id != purchase.userId) {
+            return res.status(403).send("Forbidden");
+        }
+
+        const invoice = {
+            purchaseId: purchase._id,
+            date: purchase.createdAt.toLocaleString().split(",")[0],
+            item: item.title,
+            amount: purchase.amount,
+            paymentMethod: purchase.paymentMethod,
+            to: {
+                name: user.name,
+                email: user.email,
+            },
+            from: {
+                name: merchantName,
+                email: merchantAddress,
+            }
+        };
+
+        return res.send(invoice);
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
 })
 
 //CREATE ORDER (STRIPE)

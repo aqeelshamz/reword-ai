@@ -7,6 +7,7 @@ const paymentMethods = ["stripe", "razorpay"];
 const freeItemRewriteCount = 100;
 
 const merchantName = "RewordAI";
+const merchantAddress = "RewordAI, RewordAI Street, 123456, RewordAI."
 const razorpayThemeColor = "#528ff0";
 
-export { merchantName, prompt, tones, lengths, currency, paymentMethods, freeItemRewriteCount, razorpayThemeColor };
+export { merchantName, merchantAddress, prompt, tones, lengths, currency, paymentMethods, freeItemRewriteCount, razorpayThemeColor };
