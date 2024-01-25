@@ -1,11 +1,11 @@
-import express from "express";
 import joi from "joi";
-import { validateAdmin } from "../middlewares/validate.js";
-import User from "../models/User.js";
+import express from "express";
 import Item from "../models/Item.js";
-import PaymentMethod from "../models/PaymentMethod.js";
-import Purchase from "../models/Purchase.js";
+import User from "../models/User.js";
 import Rewrites from "../models/Rewrites.js";
+import Purchase from "../models/Purchase.js";
+import PaymentMethod from "../models/PaymentMethod.js";
+import { validateAdmin } from "../middlewares/validate.js";
 
 const router = express.Router();
 
@@ -83,7 +83,6 @@ router.post("/shop/edit", validateAdmin, async (req, res) => {
         return res.send("Updated!");
     }
     catch (err) {
-        console.log(err)
         return res.status(500).send(err);
     }
 });
@@ -100,7 +99,6 @@ router.post("/shop/delete", validateAdmin, async (req, res) => {
         return res.send("Deleted!");
     }
     catch (err) {
-        console.log(err)
         return res.status(500).send(err);
     }
 });

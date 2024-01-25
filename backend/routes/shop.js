@@ -1,17 +1,17 @@
-import express from "express";
 import joi from "joi";
-import { validate } from "../middlewares/validate.js";
-import Item from "../models/Item.js";
-import stripe from "stripe";
-import Razorpay from "razorpay";
+import dotenv from "dotenv";
 import crypto from "crypto";
-import Purchase from "../models/Purchase.js";
-import PaymentMethod from "../models/PaymentMethod.js";
-import { currency, merchantAddress, merchantName, razorpayThemeColor } from "../utils/utils.js";
+import stripe from "stripe";
+import express from "express";
+import Razorpay from "razorpay";
+import User from "../models/User.js";
+import Item from "../models/Item.js";
 import Order from "../models/Order.js";
 import Rewrites from "../models/Rewrites.js";
-import dotenv from "dotenv";
-import User from "../models/User.js";
+import Purchase from "../models/Purchase.js";
+import { validate } from "../middlewares/validate.js";
+import PaymentMethod from "../models/PaymentMethod.js";
+import { currency, merchantAddress, merchantName, razorpayThemeColor } from "../utils/utils.js";
 
 dotenv.config();
 
@@ -194,8 +194,7 @@ router.post('/create-order-razorpay', validate, async (req, res) => {
         };
 
         return res.json(resData);
-    } catch (error) {
-        console.log(error)
+    } catch (err) {
         return res.status(500).json({ error: 'Failed to create order' });
     }
 });

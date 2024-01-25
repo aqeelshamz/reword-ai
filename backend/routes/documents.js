@@ -1,9 +1,7 @@
-import express from "express";
 import joi from "joi";
-import { validate } from "../middlewares/validate.js";
+import express from "express";
 import Document from "../models/Document.js";
-import Purchase from "../models/Purchase.js";
-import Item from "../models/Item.js";
+import { validate } from "../middlewares/validate.js";
 
 const router = express.Router();
 

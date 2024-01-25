@@ -1,12 +1,12 @@
+import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import cors from "cors";
-import rewordRouter from "./routes/rewordai.js";
-import usersRouter from "./routes/users.js";
-import documentsRouter from "./routes/documents.js";
-import adminRouter from "./routes/admin.js";
 import itemsRouter from "./routes/shop.js";
+import adminRouter from "./routes/admin.js";
+import usersRouter from "./routes/users.js";
+import rewordRouter from "./routes/rewordai.js";
+import documentsRouter from "./routes/documents.js";
 
 dotenv.config();
 

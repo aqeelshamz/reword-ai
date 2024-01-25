@@ -1,9 +1,9 @@
-import express from "express";
 import joi from "joi";
-import { freeItemRewriteCount, lengths, prompt, tones } from "../utils/utils.js";
+import express from "express";
+import Rewrites from "../models/Rewrites.js";
 import { Configuration, OpenAIApi } from "openai";
 import { validate } from "../middlewares/validate.js";
-import Rewrites from "../models/Rewrites.js";
+import { freeItemRewriteCount, lengths, prompt, tones } from "../utils/utils.js";
 
 const router = express.Router();
 
@@ -65,7 +65,6 @@ router.post("/rewrite", validate, async (req, res) => {
         return res.send(JSON.parse(completion.data.choices[0].message.content));
     }
     catch (err) {
-        console.log(err)
         return res.status(500).send(err);
     }
 });
