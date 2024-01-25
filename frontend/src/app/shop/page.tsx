@@ -1,5 +1,5 @@
 "use client";
-import { serverURL } from "@/utils/utils";
+import { currencySymbol, serverURL } from "@/utils/utils";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -43,7 +43,7 @@ export default function Page() {
                                 <div className="badge badge-secondary">{["Free", "Paid"][item?.type]}</div>
                                 {!item?.enable ? <div className="badge badge-ghost">Disabled</div> : ""}
                             </h2>
-                            <p className="font-semibold text-4xl mb-4">${item?.price}</p>
+                            <p className="font-semibold text-4xl mb-4">{currencySymbol} {item?.price}</p>
                             <p className='flex items-center'><FiCheckCircle className='mr-2' />{item?.rewriteLimit} rewrites</p>
                         </div>
                     </div>

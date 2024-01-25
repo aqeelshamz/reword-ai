@@ -1,10 +1,12 @@
 "use client";
 import Link from 'next/link';
-import React, { useState } from 'react';
-import { FiCreditCard, FiDollarSign, FiGift, FiHome, FiLogOut, FiMoreHorizontal, FiSettings, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
+import React, { useEffect, useState } from 'react';
+import { FiArrowLeft, FiCreditCard, FiDollarSign, FiGift, FiHome, FiLogOut, FiMoreHorizontal, FiSettings, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { usePathname } from "next/navigation";
+import axios from 'axios';
+import { serverURL } from '@/utils/utils';
 
 export default function RootLayout({
   children,
@@ -14,6 +16,27 @@ export default function RootLayout({
   const [showMenu, setShowMenu] = useState(true);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const pathName = usePathname();
+
+  const [user, setUser] = useState<any>();
+
+  const getUser = async () => {
+    const config = {
+      method: "GET",
+      url: `${serverURL}/documents/list`,
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setUser(response.data.user);
+      })
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <main className="flex bg-base-100 h-screen w-screen p-2 max-sm:p-0" onClick={() => {
@@ -38,7 +61,8 @@ export default function RootLayout({
           {/* <Link href="/admin/settings"><label className={(!pathName.includes("/admin/settings") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiSettings /> Settings</label></Link> */}
         </div>
         <hr />
-        <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center mt-2 hover:bg-base-200 p-2 rounded-lg'>
+        <Link href="/"><label className='btn mb-2 mt-4 w-full'><FiArrowLeft /> GO BACK TO USER</label></Link>
+        <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center hover:bg-base-200 p-2 rounded-lg'>
           <div className='flex items-center justify-between w-full'>
             <div className='flex items-center'>
               <div className="avatar placeholder mr-2">
@@ -46,7 +70,7 @@ export default function RootLayout({
                   <span><FiUser /></span>
                 </div>
               </div>
-              <p className='font-semibold'>Admin</p>
+              <p className='font-semibold'>{user?.name}</p>
             </div>
             <FiMoreHorizontal />
           </div>

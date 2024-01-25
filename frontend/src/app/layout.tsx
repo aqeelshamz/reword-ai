@@ -1,5 +1,4 @@
 import './globals.css'
-import type { Metadata } from 'next'
 import { Golos_Text } from 'next/font/google'
  
 const golos = Golos_Text({
@@ -9,7 +8,7 @@ const golos = Golos_Text({
 
 export const metadata = {
   title: 'RewordAI',
-  description: 'Your AI Text Rewriter',
+  description: 'Your AI Textewriter',
 }
 
 export default function RootLayout({

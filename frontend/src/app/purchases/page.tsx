@@ -51,7 +51,7 @@ export default function Page() {
                                 <td>{item?.item}</td>
                                 <td>{currencySymbol} {item?.amount}</td>
                                 <td>{item?.paymentMethod}</td>
-                                <td><button className='btn btn-md'><FiDownload /></button></td>
+                                <td><Link href={"/invoice/" + item._id}><button className='btn btn-md'><FiDownload /></button></Link></td>
                             </tr>
                         })
                     }
