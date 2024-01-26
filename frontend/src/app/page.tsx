@@ -270,6 +270,7 @@ export default function Home() {
       },
       data: {
         prompt: generateTextWithAIPrompt,
+        length: length
       }
     };
 

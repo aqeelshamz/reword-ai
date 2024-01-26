@@ -59,11 +59,10 @@ export default function RazorpayIntegration(item: any | string) {
                         data: values,
                     };
 
-                    await axios(config);
-                    toast.success('Payment successful');
+                    var resp = await axios(config);
 
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/invoice/' + resp?.data?.purchaseId;
                     }, 2000);
                 } catch (error) {
                     console.error(error);

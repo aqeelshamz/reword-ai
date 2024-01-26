@@ -38,7 +38,7 @@ export default function Page() {
     }, [data]);
 
     return <main className="invoice-page flex flex-col w-screen h-screen p-4 overflow-hidden bg-purple-100">
-        <div className="headerp flex items-center mb-5 font-semibold text-2xl max-sm:mb-3"><div className="cursor-pointer" onClick={() => { window.history.back(); }}><FiArrowLeft className="mr-5" /></div> <FiFileText className="mr-2" /> Invoice</div>
+        <div className="headerp flex items-center mb-5 font-semibold text-2xl max-sm:mb-3"><div className="cursor-pointer" onClick={() => { window.location.href = "/" }}><FiArrowLeft className="mr-5" /></div> <FiFileText className="mr-2" /> Invoice</div>
         <div className="w-full h-full flex flex-col justify-center items-center ">
             <p className="mb-5 text-lg">{appName}</p>
             <div className="min-w-[35vw] bg-white rounded-xl overflow-hidden">

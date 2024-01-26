@@ -31,8 +31,6 @@ export default function CheckoutForm({ orderId }: { orderId: string }) {
         stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
             switch (paymentIntent?.status) {
                 case "succeeded":
-                    console.log("payment success: ");
-                    console.log(paymentIntent);
                     setMessage("Payment succeeded!");
                     break;
                 case "processing":
@@ -69,13 +67,13 @@ export default function CheckoutForm({ orderId }: { orderId: string }) {
             data: { orderId },
         };
 
-        await axios(config);
+        var response = await axios(config);
 
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:3000/shop/payment/complete",
+                return_url: "http://localhost:3000/invoice/" + response.data?.purchaseId,
             },
         });
 

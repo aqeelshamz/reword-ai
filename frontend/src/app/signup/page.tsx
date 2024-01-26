@@ -30,7 +30,82 @@ export default function Home() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const [verificationCodeSent, setVerificationCodeSent] = useState<boolean>(false);
+    const [verificationCode, setVerificationCode] = useState<string>("");
+
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const sendVerificationCode = async () => {
+        setLoading(true);
+        if (email == "" || name == "" || password == "") {
+            toast.error("Please fill out all fields!");
+            return;
+        }
+
+        const config = {
+            method: "POST",
+            url: `${serverURL}/users/send-verification-code`,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": `application/json`,
+            },
+            data: {
+                "email": email
+            }
+        };
+
+        axios(config)
+            .then((response) => {
+                toast.success("Verification Code Sent!");
+                setVerificationCodeSent(true);
+                setLoading(false);
+            })
+            .catch((error) => {
+                toast.error("Something went wrong! Please try again later.");
+                setLoading(false);
+            });
+    }
+
+    const verifyEmail = async () => {
+        if (email == "" || name == "" || password == "") {
+            toast.error("Please fill out all fields!");
+            return;
+        }
+
+        if (verificationCode == "") {
+            toast.error("Please enter the verification code!");
+            return;
+        }
+
+        const config = {
+            method: "POST",
+            url: `${serverURL}/users/verify-email`,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": `application/json`,
+            },
+            data: {
+                "email": email,
+                "code": verificationCode,
+            }
+        };
+
+        axios(config)
+            .then((response) => {
+                toast.success("Email verified!");
+                signup();
+            })
+            .catch((error) => {
+                toast.error("Something went wrong! Please try again later.");
+            });
+    }
+
     const signup = async () => {
+        if (email == "" || name == "" || password == "") {
+            toast.error("Please fill out all fields!");
+            return;
+        }
+
         const config = {
             method: "POST",
             url: `${serverURL}/users/signup`,
@@ -48,7 +123,9 @@ export default function Home() {
         axios(config)
             .then((response) => {
                 toast.success("Account created!");
-                window.location.href = "/login";
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 1000);
             })
             .catch((error) => {
                 toast.error("Something went wrong!");
@@ -73,7 +150,19 @@ export default function Home() {
                 <input className="input input-bordered mb-5 max-w-xs" placeholder="Email" type="text" onChange={(x) => setEmail(x.target.value)} value={email} />
                 <p className="text-sm mb-1">Password</p>
                 <input className="input input-bordered mb-5 max-w-xs" placeholder="Password" type="password" onChange={(x) => setPassword(x.target.value)} value={password} />
-                <button className="btn btn-primary max-w-xs" onClick={() => signup()}>Create account</button>
+                {verificationCodeSent && <div className="flex flex-col">
+                    <p className="text-sm mb-1">Verification Code</p>
+                    <input className="input input-bordered mb-5 max-w-xs" placeholder="Verification Code" type="text" onChange={(x) => setVerificationCode(x.target.value)} value={verificationCode} />
+                </div>}
+                <button className="btn btn-primary max-w-xs" onClick={() => {
+                    if(loading) return;
+                    if (!verificationCodeSent) {
+                        sendVerificationCode();
+                    }
+                    else {
+                        verifyEmail();
+                    }
+                }}>{loading ? <span className="loading loading-spinner"></span> : verificationCodeSent ? "Create Account" : "Send Verification Code"}</button>
             </div>
             <ToastContainer />
         </main>
