@@ -12,6 +12,7 @@ import Purchase from "../models/Purchase.js";
 import { validate } from "../middlewares/validate.js";
 import PaymentMethod from "../models/PaymentMethod.js";
 import { currency, merchantAddress, merchantName, razorpayThemeColor } from "../utils/utils.js";
+import Invoice from "../models/Invoice.js";
 
 dotenv.config();
 
@@ -71,30 +72,12 @@ router.post("/invoice", validate, async (req, res) => {
         const data = await schema.validateAsync(req.body);
 
         const purchase = await Purchase.findById(data.purchaseId);
-        const item = await Item.findById(purchase.itemId);
-        const user = await User.findById(purchase.userId);
 
-        if (req.user.type != "admin" && req.user._id != purchase.userId) {
+        if (req.user.type != "admin" && req.user._id.toString() != purchase.userId.toString()) {
             return res.status(403).send("Forbidden");
         }
 
-        const invoice = {
-            purchaseId: purchase._id,
-            date: purchase.createdAt.toLocaleString().split(",")[0],
-            item: item.title,
-            amount: purchase.amount,
-            paymentMethod: purchase.paymentMethod,
-            to: {
-                name: user.name,
-                email: user.email,
-            },
-            from: {
-                name: merchantName,
-                email: merchantAddress,
-            }
-        };
-
-        return res.send(invoice);
+        return res.send(await Invoice.findOne({ purchaseId: purchase._id }));
     }
     catch (err) {
         return res.status(500).send(err);
@@ -222,7 +205,25 @@ router.post('/verify-stripe-payment', validate, async (req, res) => {
 
     await newPurchase.save();
     await Order.findOneAndDelete({ orderId: orderId });
-    return res.send("Success");
+
+    const newInvoice = new Invoice({
+        purchaseId: newPurchase._id,
+        userId: req.user._id,
+        date: newPurchase.createdAt.toLocaleString().split(",")[0],
+        item: item.title + " (" + item.rewriteLimit + " Rewrites)",
+        amount: newPurchase.amount,
+        paymentMethod: "Stripe",
+        to: {
+            name: req.user.name,
+            email: req.user.email,
+        },
+        from: {
+            name: merchantName,
+            email: merchantAddress,
+        }
+    });
+
+    return res.send(await newInvoice.save());
 });
 
 //COMPLETE PURCHASE (RAZORPAY)
@@ -252,7 +253,24 @@ router.post('/verify-razorpay-payment', validate, async (req, res) => {
         await newPurchase.save();
         await Order.findOneAndDelete({ orderId: razorpay_order_id });
 
-        return res.send("Success");
+        const newInvoice = new Invoice({
+            purchaseId: newPurchase._id,
+            userId: req.user._id,
+            date: newPurchase.createdAt.toLocaleString().split(",")[0],
+            item: item.title + " (" + item.rewriteLimit + " Rewrites)",
+            amount: newPurchase.amount,
+            paymentMethod: "Stripe",
+            to: {
+                name: req.user.name,
+                email: req.user.email,
+            },
+            from: {
+                name: merchantName,
+                email: merchantAddress,
+            }
+        });
+
+        return res.send(await newInvoice.save());
     } else {
         return res.status(400).send('Payment verification failed');
     }
