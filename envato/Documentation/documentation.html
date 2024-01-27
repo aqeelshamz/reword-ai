@@ -35,6 +35,7 @@
       padding: 10px;
       border-radius: 5px;
       border: 1px solid rgba(255, 255, 255, 0.425);
+      line-height: 3;
     }
 
     code,
@@ -63,14 +64,15 @@
 
 <body>
   <h1 id="title">
-    🤖 RewordAI - Your Ultimate AI-Powered Rewriting and Grammar Correcting Tool!
+    🤖 RewordAI - AI-Powered Rewriting and Grammar Correcting SaaS Platform
   </h1>
   <p>
-    <img src="https://raw.githubusercontent.com/aqeelshamz/envato-src/main/rewordai_desc_1.png" alt="RewordAI" />
+    <img src="https://raw.githubusercontent.com/aqeelshamz/envato-src/main/rewordai/rewordai_desc_0.png"
+      alt="RewordAI" />
   </p>
   <p>
     Welcome! First of all we want to thank you for purchasing
-    <b>RewordAI - AI Rewriter, Grammar Correcting, Content Generation, Summarization and More (Next.js) </b>. We really
+    <b>RewordAI - AI-Powered Rewriting and Grammar Correcting SaaS Platform</b>. We really
     do
     appreciate every sale. If you like our work please do not forget to rate
     it. It helps us in developing new and better items. In the following
@@ -82,7 +84,8 @@
     and we'll get back to you as soon as possible. Thanks so much!!!
   </p>
   <p>
-    RewordAI is an advanced AI-powered text rewriter and content generation tool designed to assist writers, bloggers, marketers, and
+    RewordAI is an advanced AI-powered text rewriter and content generation tool designed to assist writers, bloggers,
+    marketers, and
     students in creating high-quality written content effortlessly. It leverages cutting-edge natural language
     processing algorithms to analyze your writing prompts and generate contextually appropriate content in various
     writing styles and tones.
@@ -181,59 +184,77 @@
   <ul>
     <li>
       <p>
-        <b>Next.js:</b> Install Next.js, a popular React framework for
+        <b>Next.js (Frontend):</b> Install Next.js, a popular React framework for
         building web applications. You can download and install it from the
-        official website or use a package manager like npm or yarn.
+        official website or use a package manager like npm or yarn. <a target="_blank"
+          href="https://nextjs.org/docs/getting-started/installation">Official Docs</a>
       </p>
     </li>
     <li>
       <p>
-        <b>Node.js:</b> Install Node.js, a JavaScript runtime that allows you
+        <b>Node.js (Backend):</b> Install Node.js, a JavaScript runtime that allows you
         to execute JavaScript code outside of a web browser. You can download
         the latest version of Node.js from the official website and follow the
-        installation instructions for your operating system.
+        installation instructions for your operating system. <a target="_blank"
+          href="https://nodejs.org/docs/latest/api/">Official Docs</a>
       </p>
     </li>
     <li>
       <p>
-        <b>MongoDB:</b> Install MongoDB, a NoSQL database, to store and manage
+        <b>MongoDB (Database):</b> Install MongoDB, a NoSQL database, to store and manage
         data for your RewordAI app. MongoDB offers installation guides for
-        different operating systems on their official website.
+        different operating systems on their official website. <a target="_blank"
+          href="https://www.mongodb.com/docs/">Official Docs</a>
       </p>
     </li>
   </ul>
   <h3 id="backend-setup-">⚙️ Backend Setup:</h3>
   <ul>
     <li>
-      Open a terminal or command prompt and navigate to the backend directory
-      of your RewordAI app.
+      Open a terminal or command prompt and navigate to the backend directory (/backend).
     </li>
+    <li>
+      <p>
+        <b>Setting up environment variables (.env file):</b><br />
+        Replace the values of the following environment variables in the .env file with your own values:
+      </p>
+    </li>
+    <li><code>DB_URL</code> - MongoDB database URL</li>
+    <li><code>OPENAI_API_KEY</code> - OpenAI API Key</li>
+    <li><code>TOKEN_SECRET</code> - Token secret for JWT auth token generation (You can give a random string value)</li>
+    <li><code>STRIPE_SECRET_KEY</code> - Stripe secret key for payment integration (You can get this from your Stripe
+      Dashboard)</li>
+    <li><code>RAZORPAY_KEY_ID</code> - Razorpay key id for payment integration (You can get this from your Razorpay
+      Settings)</li>
+    <li><code>RAZORPAY_KEY_SECRET</code> - Razorpay key secret for payment integration (You can get this from your
+      Razorpay Settings)</li>
+    <li><code>APP_NAME</code> - App Name (Used in Invoice)</li>
+    <li><code>SMTP_HOST</code> - SMTP host name for email services (smtp.gmail.com)</li>
+    <li><code>SMTP_PORT</code> - SMTP port for email services (465)</li>
+    <li><code>SMTP_USER</code> - SMTP username for email services (example@gmail.com, Replace with your email)</li>
+    <li><code>SMTP_PASS</code> - SMTP password for email services (Replace with your password)</li></br />
+    <li>
+      <p>
+        <b>Setting up utils file (utils/utils.js):</b><br />
+        You can change the values of the following variables in the utils file according to your needs:
+      </p>
+    </li>
+    <li><code>currency</code> - Currency (lowercase) for razorpay and stripe order creation (For eg. inr, usd)</li>
+    <li><code>freeItemRewriteCount</code> - Initial rewrite count for new users</li>
+    <li><code>merchantName</code> - Merchant name for Invoice & Razorpay</li>
+    <li><code>merchantAddress</code> - Merchant address for Invoice</li>
+    <li><code>razorpayThemeColor</code> - Theme color in HEX for Razorpay payment modal</li>
+    <li><code>logoBase64</code> - Base64 of your logo to display in email (email verification email)</li><br />
     <li>
       <b>Install Dependencies:</b> Run the following command to install the
       required dependencies for the backend:
-      <pre><code>npm <span class="hljs-keyword">install</span>
-</code></pre>
+      <pre><code>npm install</code></pre>
     </li>
     <li>
       <b>Start the Backend:</b> Once the dependencies are installed, start the
       backend server using the following command: This is some basic, sample
       markdown.
-      <pre><code><span class="hljs-built_in">npm</span> start
-</code></pre>
-    </li>
-    <li>
-      <p>
-        <b>Database Setup:</b> Replace the DB_URL in the .env file with the
-        URL of your MongoDB database. This URL should include the necessary
-        credentials to connect to your database.
-      </p>
-    </li>
-    <li>
-      <p>
-        <b>OpenAI API Key:</b> Replace the OPENAI_API_KEY in the .env file
-        with your unique API key obtained from the OpenAI platform. This key
-        is required to interact with the AI models used for image generation.
-      </p>
+      <pre><code>npm start</code></pre>
     </li>
   </ul>
   <h3 id="frontend-setup-">🖥️ Frontend Setup:</h3>
@@ -246,10 +267,20 @@
     </li>
     <li>
       <p>
+        <b>Setting up utils file (utils/utils.ts):</b><br />
+        You can change the values of the following variables in the utils file according to your needs:
+      </p>
+    </li>
+    <li><code>serverURL</code> - Backend URL (Node.js App)</li>
+    <li><code>currencySymbol</code> - Currency symbol (For eg. $, ₹, €, £)</li>
+    <li><code>appName</code> - App Name to display in the web app</li>
+    <li><code>stripeKey</code> - Stripe key for payment integration (You can get this from your Stripe Dashboard)</li><br/>
+    <li>
+      <p>
         <b>Install Dependencies:</b> Run the following command to install the
         required dependencies for the frontend:
       </p>
-      <pre><code>npm <span class="hljs-keyword">install</span>
+      <pre><code>npm install
 </code></pre>
     </li>
     <li>
@@ -257,7 +288,7 @@
         <b>Run the Frontend:</b> After installing dependencies, start the
         frontend development server using the following command:
       </p>
-      <pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> dev</span>
+      <pre><code>npm run dev
 </code></pre>
     </li>
     <li>
@@ -287,6 +318,14 @@
         After creating an account, use your credentials to log in to the app.
       </p>
     </li>
+    <li>
+      <p style="background:rgb(255, 194, 189); padding: 15px; color: red; border-radius: 10px;">
+        First created account will be the <b
+          style="background:rgb(255, 194, 189); color: red; border-radius: 10px;">Admin Account</b>. You can manually
+        change the user type in MongoDB database
+        via MongoDB Compass or MongoDB Shell.
+      </p>
+    </li>
   </ul>
   <h1 id="packages">📦 Packages Used</h1>
   <p>Frontend:</p>
@@ -312,15 +351,15 @@
     </li>
     <br />
     <li>
+      <a target="_blank" href="https://www.npmjs.com/package/daisyui">daisyui</a>
+    </li>
+    <br />
+    <li>
       <a target="_blank" href="https://www.npmjs.com/package/eslint">eslint</a>
     </li>
     <br />
     <li>
       <a target="_blank" href="https://www.npmjs.com/package/eslint-config-next">eslint-config-next</a>
-    </li>
-    <br />
-    <li>
-      <a target="_blank" href="https://www.npmjs.com/package/file-saver">file-saver</a>
     </li>
     <br />
     <li>
@@ -367,6 +406,10 @@
     </li>
     <br />
     <li>
+      <a target="_blank" href="https://www.npmjs.com/package/crypto">crypto</a>
+    </li>
+    <br />
+    <li>
       <a target="_blank" href="https://www.npmjs.com/package/dotenv">dotenv</a>
     </li>
     <br />
@@ -387,11 +430,27 @@
     </li>
     <br />
     <li>
+      <a target="_blank" href="https://www.npmjs.com/package/nodemailer">nodemailer</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/nodemailer-smtp-transport">nodemailer-smtp-transport</a>
+    </li>
+    <br />
+    <li>
       <a target="_blank" href="https://www.npmjs.com/package/nodemon">nodemon</a>
     </li>
     <br />
     <li>
       <a target="_blank" href="https://www.npmjs.com/package/openai">openai</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/razorpay">razorpay</a>
+    </li>
+    <br />
+    <li>
+      <a target="_blank" href="https://www.npmjs.com/package/stripe">stripe</a>
     </li>
     <br />
   </ul>
@@ -420,7 +479,7 @@
   </ul>
   <h1 id="support">📧 Support</h1>
   <p>
-    <img src="https://raw.githubusercontent.com/aqeelshamz/envato-src/main/rewordai_desc_17.png"
+    <img src="https://raw.githubusercontent.com/aqeelshamz/envato-src/main/rewordai/rewordai_desc_9.png"
       alt="aqeelten@gmail.com" />
   </p>
   <p>
