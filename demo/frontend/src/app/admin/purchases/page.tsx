@@ -53,7 +53,7 @@ export default function Page() {
                 <tbody>
                     {
                         data.map((item: any, i: number) => {
-                            return <tr className='hover'>
+                            return <tr key={i} className='hover'>
                                 <th>1</th>
                                 <td>{item?.date}</td>
                                 <td>{item?.user}</td>

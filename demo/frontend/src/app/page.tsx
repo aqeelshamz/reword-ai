@@ -319,7 +319,7 @@ export default function Home() {
             <p className="mr-2 font-semibold">Tone: </p>
             {
               ["✨ Normal", "👟 Casual", "💼 Formal", "📝 Academic", "📖 Creative"].map((e, i: number) => {
-                return <button className={'btn btn-sm mr-2 max-sm:mb-2 ' + (tone == i ? 'btn-primary' : '')} onClick={() => setTone(i)}>{e}</button>
+                return <button key={i} className={'btn btn-sm mr-2 max-sm:mb-2 ' + (tone == i ? 'btn-primary' : '')} onClick={() => setTone(i)}>{e}</button>
               })
             }
           </div>
@@ -327,7 +327,7 @@ export default function Home() {
             <p className="mr-2 font-semibold">Length: </p>
             {
               ["📝 Short", "📄 Medium", "📚 Long"].map((e, i: number) => {
-                return <button className={'btn btn-sm mr-2 max-sm:mb-2 ' + (length == i ? 'btn-primary' : '')} onClick={() => setLength(i)}>{e}</button>
+                return <button key={i} className={'btn btn-sm mr-2 max-sm:mb-2 ' + (length == i ? 'btn-primary' : '')} onClick={() => setLength(i)}>{e}</button>
               })
             }
           </div>
@@ -413,7 +413,7 @@ export default function Home() {
             <h3 className="font-bold text-lg mb-4">✨📝 Rewrites ({rewrites.length})</h3>
             <div className="max-h-[40vh] overflow-y-auto">
               {rewrites.map((e, i: number) => {
-                return <div className="hover:bg-base-200 rounded-lg px-2 cursor-pointer" onClick={() => { setText(e); }}>
+                return <div key={i} className="hover:bg-base-200 rounded-lg px-2 cursor-pointer" onClick={() => { setText(e); }}>
                   <p className="py-4">{e}<button className="btn btn-sm ml-2" onClick={() => {
                     navigator.clipboard.writeText(e);
                     toast.success("Copied to clipboard!");
