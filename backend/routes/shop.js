@@ -4,7 +4,6 @@ import crypto from "crypto";
 import stripe from "stripe";
 import express from "express";
 import Razorpay from "razorpay";
-import User from "../models/User.js";
 import Item from "../models/Item.js";
 import Order from "../models/Order.js";
 import Rewrites from "../models/Rewrites.js";
@@ -259,7 +258,7 @@ router.post('/verify-razorpay-payment', validate, async (req, res) => {
             date: newPurchase.createdAt.toLocaleString().split(",")[0],
             item: item.title + " (" + item.rewriteLimit + " Rewrites)",
             amount: newPurchase.amount,
-            paymentMethod: "Stripe",
+            paymentMethod: "Razorpay",
             to: {
                 name: req.user.name,
                 email: req.user.email,
