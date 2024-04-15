@@ -7,6 +7,7 @@ import adminRouter from "./routes/admin.js";
 import usersRouter from "./routes/users.js";
 import rewordRouter from "./routes/rewordai.js";
 import documentsRouter from "./routes/documents.js";
+import Faq from "./models/Faq.js";
 
 dotenv.config();
 
@@ -23,6 +24,10 @@ app.use("/shop", itemsRouter);
 
 app.get("/", (req, res) => {
     res.send("RewordAI API");
+});
+
+app.get("/faq", async (req, res) => {
+    res.send(await Faq.find());
 });
 
 async function connectDB() {

@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { appName, serverURL } from '@/utils/utils';
 import React, { useEffect, useState } from 'react';
-import { FiArrowLeft, FiCreditCard, FiDollarSign, FiHome, FiLogOut, FiMoreHorizontal, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowLeft, FiCreditCard, FiDollarSign, FiHelpCircle, FiHome, FiLogOut, FiMoreHorizontal, FiShoppingCart, FiUser, FiUsers } from "react-icons/fi";
 
 export default function RootLayout({
   children,
@@ -57,6 +57,7 @@ export default function RootLayout({
           <Link href="/admin/shop"><label className={(!pathName.includes("/admin/shop") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiShoppingCart /> Shop</label></Link>
           <Link href="/admin/purchases"><label className={(!pathName.includes("/admin/purchases") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiDollarSign /> Purchases</label></Link>
           <Link href="/admin/payment_methods"><label className={(!pathName.includes("/admin/payment_methods") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiCreditCard /> Payment methods</label></Link>
+          <Link href="/admin/faq"><label className={(!pathName.includes("/admin/faq") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiHelpCircle /> FAQ</label></Link>
           <Link href="/admin/users"><label className={(!pathName.includes("/admin/users") ? "btn-ghost " : "") + 'btn w-full justify-start normal-case'} onClick={() => { }}><FiUsers /> Users</label></Link>
         </div>
         <hr />

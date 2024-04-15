@@ -6,6 +6,7 @@ import Rewrites from "../models/Rewrites.js";
 import Purchase from "../models/Purchase.js";
 import PaymentMethod from "../models/PaymentMethod.js";
 import { validateAdmin } from "../middlewares/validate.js";
+import Faq from "../models/Faq.js";
 
 const router = express.Router();
 
@@ -162,7 +163,7 @@ router.get("/users", validateAdmin, async (req, res) => {
     const users = (await User.find().select("-password")).reverse();
 
     var usersData = [];
-    for(const user of users){
+    for (const user of users) {
         const rewrites = await Rewrites.findOne({ userId: user._id });
         const purchases = await Purchase.find({ userId: user._id });
 
@@ -192,7 +193,7 @@ router.get("/purchases", validateAdmin, async (req, res) => {
 
     var purchasesData = [];
 
-    for(const purchase of purchases){
+    for (const purchase of purchases) {
         const user = await User.findById(purchase.userId);
         const item = await Item.findById(purchase.itemId);
 
@@ -210,5 +211,48 @@ router.get("/purchases", validateAdmin, async (req, res) => {
     return res.send(purchasesData);
 });
 //PURCHASES END
+
+//FAQ START
+router.get("/faq", validateAdmin, async (req, res) => {
+    return res.send(await Faq.find());
+});
+
+router.post("/faq/create", validateAdmin, async (req, res) => {
+    const schema = joi.object({
+        question: joi.string().required(),
+        answer: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+        const newFaq = new Faq({
+            question: data.question,
+            answer: data.answer,
+        });
+
+        await newFaq.save();
+        return res.send(newFaq);
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).send(err);
+    }
+});
+
+router.post("/faq/delete", validateAdmin, async (req, res) => {
+    const schema = joi.object({
+        faqId: joi.string().required(),
+    });
+
+    try {
+        const data = await schema.validateAsync(req.body);
+        await Faq.findByIdAndDelete(data.faqId);
+        return res.send("Deleted!");
+    }
+    catch (err) {
+        return res.status(500).send(err);
+    }
+});
+//FAQ END
 
 export default router;

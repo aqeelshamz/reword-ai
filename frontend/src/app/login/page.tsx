@@ -15,7 +15,7 @@ export default function Home() {
         if (typeof window !== 'undefined') {
             setTheme(localStorage.getItem("theme") ? localStorage.getItem("theme") : "light");
             if (localStorage.getItem("token")) {
-                window.location.href = "/chat";
+                window.location.href = "/home";
             }
         }
     }, [])
@@ -48,7 +48,7 @@ export default function Home() {
             .then((response) => {
                 toast.success("Logged In!");
                 localStorage.setItem("token", response.data.token);
-                window.location.href = response.data.user.type === "admin" ? "/admin" : "/";
+                window.location.href = response.data.user.type === "admin" ? "/admin" : "/home";
             })
             .catch((error) => {
                 toast.error("Something went wrong!");

@@ -23,7 +23,7 @@ const instance = new Razorpay({
 const router = express.Router();
 const stripeObj = stripe(process.env.STRIPE_SECRET_KEY);
 
-router.get("/", validate, async (req, res) => {
+router.get("/", async (req, res) => {
     const paymentMethod = await PaymentMethod.findOne();
     const items = await Item.find();
     const paymentMethods = paymentMethod ? {
