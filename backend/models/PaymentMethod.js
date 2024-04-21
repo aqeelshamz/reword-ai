@@ -10,6 +10,10 @@ const PaymentMethodSchema = new mongoose.Schema(
             type: Boolean,
             required: true
         },
+        paypal: {
+            type: Boolean,
+            required: true
+        },
     },
     {
         timestamps: true,
