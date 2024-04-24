@@ -15,8 +15,8 @@ dotenv.config();
 
 const router = express.Router();
 
-router.get("/", validate, (req, res) => {
-    res.send("Users");
+router.get("/", validate, async (req, res) => {
+    return res.send(await User.findById(req.user._id));
 });
 
 router.post("/signup", async (req, res) => {
@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
     try {
         const data = await schema.validateAsync(req.body);
 
-        const user = await User.findOne({ email: data.email });
+        const user = await User.findOne({ email: data.email }).select("+password");
 
         if (!user) return res.status(400).send("Email or password is wrong");
 
@@ -80,6 +80,7 @@ router.post("/login", async (req, res) => {
 
         return res.send({ user: user, token: token });
     } catch (err) {
+        console.log(err)
         return res.status(500).send(err);
     }
 });

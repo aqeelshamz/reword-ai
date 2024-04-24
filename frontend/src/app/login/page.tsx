@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { appName, serverURL } from '@/utils/utils';
 import { ToastContainer, toast } from 'react-toastify';
+import { cookies } from 'next/dist/client/components/headers';
 
 export default function Home() {
     const [theme, setTheme] = useState<null | any | string>(
@@ -48,6 +49,7 @@ export default function Home() {
             .then((response) => {
                 toast.success("Logged In!");
                 localStorage.setItem("token", response.data.token);
+                document.cookie = `token=${response.data.token}`;
                 window.location.href = response.data.user.type === "admin" ? "/admin" : "/home";
             })
             .catch((error) => {

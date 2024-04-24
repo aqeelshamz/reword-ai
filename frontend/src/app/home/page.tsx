@@ -6,6 +6,7 @@ import { appName, serverURL } from "@/utils/utils";
 import { useRef, useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiLogOut, FiCopy, FiMoon, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowRight, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
+import { cookies } from "next/dist/client/components/headers";
 
 export default function Home() {
   const [text, setText] = useState<string>("");
