@@ -123,6 +123,7 @@ router.post("/payment-methods", validateAdmin, async (req, res) => {
     const schema = joi.object({
         razorpay: joi.boolean().required(),
         stripe: joi.boolean().required(),
+        paypal: joi.boolean().required(),
     });
 
     try {
@@ -133,23 +134,27 @@ router.post("/payment-methods", validateAdmin, async (req, res) => {
             const newPaymentMethod = new PaymentMethod({
                 razorpay: data.razorpay,
                 stripe: data.stripe,
+                paypal: data.paypal,
             });
 
             await newPaymentMethod.save();
             return res.send({
                 razorpay: newPaymentMethod.razorpay,
                 stripe: newPaymentMethod.stripe,
+                paypal: newPaymentMethod.paypal,
             });
         }
 
         paymentMethod.razorpay = data.razorpay;
         paymentMethod.stripe = data.stripe;
+        paymentMethod.paypal = data.paypal;
 
         await paymentMethod.save();
 
         return res.send({
             razorpay: paymentMethod.razorpay,
             stripe: paymentMethod.stripe,
+            paypal: paymentMethod.paypal,
         });
     }
     catch (err) {

@@ -4,6 +4,10 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { currencySymbol, serverURL } from "@/utils/utils";
 import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiCreditCard, FiShoppingCart } from "react-icons/fi";
+import PayPalImg from "../paypal.png";
+import RazorpayImg from "../razorpay.png";
+import StripeImg from "../stripe.png"
+import Image from "next/image";
 
 export default function Page() {
     const [paymentMethods, setPaymentMethods] = useState<any>();
@@ -61,14 +65,21 @@ export default function Page() {
                 {paymentMethods?.stripe ? <div onClick={() => setPaymentMethod("stripe")} className={(paymentMethod === "stripe" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
                     <div className="card-body">
                         <h2 className="card-title">
-                            Stripe
+                            <Image src={StripeImg} alt="Stripe" height={35} />
                         </h2>
                     </div>
                 </div> : ""}
                 {paymentMethods?.razorpay ? <div onClick={() => setPaymentMethod("razorpay")} className={(paymentMethod === "razorpay" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
                     <div className="card-body">
                         <h2 className="card-title">
-                            Razorpay
+                            <Image src={RazorpayImg} alt="Razorpay" width={100} />
+                        </h2>
+                    </div>
+                </div> : ""}
+                {paymentMethods?.paypal ? <div onClick={() => setPaymentMethod("paypal")} className={(paymentMethod === "paypal" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
+                    <div className="card-body">
+                        <h2 className="card-title">
+                            <Image src={PayPalImg} alt="Paypal" width={100} />
                         </h2>
                     </div>
                 </div> : ""}

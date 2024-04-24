@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { Elements } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
 import { appName, serverURL, stripeKey } from "@/utils/utils";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const stripePromise = loadStripe(stripeKey);
 
@@ -15,21 +16,61 @@ export default function Page() {
     const [clientSecret, setClientSecret] = useState("");
     const [orderId, setOrderId] = useState("");
 
-    useEffect(() => {
-        // Create PaymentIntent as soon as the page loads (STRIPE)
-        fetch(`${serverURL}/shop/create-order-stripe`, {
+    function createOrder() {
+        return fetch(`${serverURL}/shop/create-order-paypal`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({ itemId: params.get("item") }),
         })
-            .then((res) => res.json())
-            .then((data) => {
-                setClientSecret(data.clientSecret);
-                setOrderId(data.orderId);
+            .then((response) => response.json())
+            .then((order) => order.id);
+    }
+
+    function onApprove(data: any) {
+        return fetch(`${serverURL}/shop/verify-paypal-payment`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                orderId: data.orderID
+            })
+        })
+            .then((response) => response.json())
+            .then((orderData) => {
+                window.location.href = "/invoice/" + orderData?.purchaseId;
             });
+
+    }
+
+    useEffect(() => {
+        switch (params.get("method")) {
+            case "razorpay":
+                break;
+            case "stripe":
+                fetch(`${serverURL}/shop/create-order-stripe`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ itemId: params.get("item") }),
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        setClientSecret(data.clientSecret);
+                        setOrderId(data.orderId);
+                    });
+                break;
+            case "paypal":
+                break;
+            default:
+                break;
+        }
     }, []);
 
     const appearance = {
@@ -51,9 +92,16 @@ export default function Page() {
                 <Elements options={options} stripe={stripePromise}>
                     <CheckoutForm orderId={orderId} />
                 </Elements>
-            ) :
+            ) : params.get("method") === "razorpay" ?
                 <RazorpayIntegration item={params.get("item")} />
-            }
+                : <PayPalScriptProvider options={{ clientId: `${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}` }}>
+                    <PayPalButtons
+                        // style={{ "layout": "vertical" }}
+                        // forceReRender={[{ "layout": "vertical" }]}
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                    />
+                </PayPalScriptProvider>}
         </div>
     </main>
 }

@@ -8,6 +8,7 @@ export default function Page() {
     type PaymentMethodData = {
         stripe: boolean;
         razorpay: boolean;
+        paypal: boolean;
     }
 
     const [data, setData] = useState<PaymentMethodData | null>();
@@ -67,7 +68,7 @@ export default function Page() {
                                 ...data!,
                                 stripe: !data?.stripe
                             });
-                            saveData({ razorpay: data?.razorpay!, stripe: !data?.stripe! });
+                            saveData({ razorpay: data?.razorpay!, stripe: !data?.stripe!, paypal: data?.paypal! });
                         }} checked={data?.stripe} /></td>
                     </tr>
                     {/* row 2 */}
@@ -79,8 +80,20 @@ export default function Page() {
                                 ...data!,
                                 razorpay: !data?.razorpay
                             });
-                            saveData({ razorpay: !data?.razorpay!, stripe: data?.stripe! });
+                            saveData({ razorpay: !data?.razorpay!, stripe: data?.stripe!, paypal: data?.paypal! });
                         }} checked={data?.razorpay} /></td>
+                    </tr>
+                    {/* row 3 */}
+                    <tr className='hover'>
+                        <th>3</th>
+                        <td>PayPal</td>
+                        <td><input type="checkbox" className="toggle" onChange={(x) => {
+                            setData({
+                                ...data!,
+                                paypal: !data?.paypal
+                            });
+                            saveData({ razorpay: data?.razorpay!, stripe: data?.stripe!, paypal: !data?.paypal! });
+                        }} checked={data?.paypal} /></td>
                     </tr>
                 </tbody>
             </table>
