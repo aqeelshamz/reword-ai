@@ -4,12 +4,16 @@ import React, { useEffect, useState } from "react";
 import { currencySymbol } from "@/utils/utils";
 import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiCreditCard, FiShoppingCart } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
+import PayPalImg from "../paypal.png";
+import RazorpayImg from "../razorpay.png";
+import StripeImg from "../stripe.png"
+import Image from "next/image";
 
 export default function Page() {
     const [paymentMethods, setPaymentMethods] = useState<any>();
     const [items, setItems] = useState<any[]>([]);
     const [selectedItem, setSelectedItem] = useState(0);
-    const [paymentMethod, setPaymentMethod] = useState("stripe"); // ["stripe", "razorpay"]
+    const [paymentMethod, setPaymentMethod] = useState("stripe"); // ["stripe", "razorpay", "paypal"]
 
     const getItems = async () => {
         var data = {
@@ -41,7 +45,8 @@ export default function Page() {
             ],
             "paymentMethods": {
                 "razorpay": true,
-                "stripe": true
+                "stripe": true,
+                "paypal": true
             }
         };
         setItems(data.items);
@@ -82,14 +87,21 @@ export default function Page() {
                 {paymentMethods?.stripe ? <div onClick={() => setPaymentMethod("stripe")} className={(paymentMethod === "stripe" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
                     <div className="card-body">
                         <h2 className="card-title">
-                            Stripe
+                            <Image src={StripeImg} alt="Stripe" height={35} />
                         </h2>
                     </div>
                 </div> : ""}
                 {paymentMethods?.razorpay ? <div onClick={() => setPaymentMethod("razorpay")} className={(paymentMethod === "razorpay" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
                     <div className="card-body">
                         <h2 className="card-title">
-                            Razorpay
+                            <Image src={RazorpayImg} alt="Razorpay" width={100} />
+                        </h2>
+                    </div>
+                </div> : ""}
+                {paymentMethods?.paypal ? <div onClick={() => setPaymentMethod("paypal")} className={(paymentMethod === "paypal" ? "border-primary " : "") + "cursor-pointer border-2 select-none card bg-base-100 hover:bg-base-200 duration-75 active:scale-95 shadow-xl mr-5 my-4"}>
+                    <div className="card-body">
+                        <h2 className="card-title">
+                            <Image src={PayPalImg} alt="Paypal" width={100} />
                         </h2>
                     </div>
                 </div> : ""}

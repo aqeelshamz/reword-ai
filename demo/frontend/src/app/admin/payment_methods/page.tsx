@@ -7,6 +7,7 @@ export default function Page() {
     type PaymentMethodData = {
         stripe: boolean;
         razorpay: boolean;
+        paypal: boolean;
     }
 
     const [data, setData] = useState<PaymentMethodData | null>();
@@ -14,7 +15,8 @@ export default function Page() {
     const getData = async () => {
         setData({
             "razorpay": true,
-            "stripe": true
+            "stripe": true,
+            "paypal": true,
         });
     }
 
@@ -47,7 +49,7 @@ export default function Page() {
                                 ...data!,
                                 stripe: !data?.stripe
                             });
-                            saveData({ razorpay: data?.razorpay!, stripe: !data?.stripe! });
+                            saveData({ razorpay: data?.razorpay!, stripe: !data?.stripe!, paypal: data?.paypal! });
                         }} checked={data?.stripe} /></td>
                     </tr>
                     {/* row 2 */}
@@ -59,7 +61,19 @@ export default function Page() {
                                 ...data!,
                                 razorpay: !data?.razorpay
                             });
-                            saveData({ razorpay: !data?.razorpay!, stripe: data?.stripe! });
+                            saveData({ razorpay: !data?.razorpay!, stripe: data?.stripe!, paypal: data?.paypal! });
+                        }} checked={data?.razorpay} /></td>
+                    </tr>
+                    {/* row 3 */}
+                    <tr className='hover'>
+                        <th>3</th>
+                        <td>Paypal</td>
+                        <td><input type="checkbox" className="toggle" onChange={(x) => {
+                            setData({
+                                ...data!,
+                                paypal: !data?.paypal
+                            });
+                            saveData({ razorpay: data?.razorpay!, stripe: data?.stripe!, paypal: !data?.paypal! });
                         }} checked={data?.razorpay} /></td>
                     </tr>
                 </tbody>

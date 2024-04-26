@@ -1,463 +1,268 @@
 "use client";
-import axios from "axios";
-import Link from "next/link";
-import { appName, serverURL } from "@/utils/utils";
-import { useRef, useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import { FiPlus, FiMoreHorizontal, FiSettings, FiUser, FiLogOut, FiCopy, FiMoon, FiType, FiFileText, FiEdit, FiTrash, FiMenu, FiArrowRight, FiShoppingCart, FiShoppingBag } from "react-icons/fi";
-import { loginAdminResponse } from "@/utils/demo";
+import { appName, currencySymbol, serverURL } from '@/utils/utils';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useEffect, useState } from 'react'
+import { FaBimobject, FaRobot } from 'react-icons/fa';
+import { FiArrowRight, FiCloud, FiCreditCard, FiEdit, FiFacebook, FiFileText, FiHome, FiInstagram, FiLock, FiLogIn, FiMonitor, FiPlayCircle, FiSettings, FiShoppingCart, FiSmartphone, FiTwitter, FiUsers, FiX, FiZap } from 'react-icons/fi';
+import Img1 from "./img/img_1.png";
+import Img2 from "./img/img_2.png";
+import Img3 from "./img/img_3.png";
+import Img4 from "./img/img_4.png";
+import Img5 from "./img/img_5.png";
+import Img6 from "./img/img_6.png";
+import Img7 from "./img/img_7.png";
+import Img8 from "./img/img_8.png";
+import Img9 from "./img/img_9.png";
+import Img10 from "./img/img_10.png";
+import Img11 from "./img/img_11.png";
+import Img12 from "./img/img_12.png";
+import Image from 'next/image';
 
-export default function Home() {
-  const [text, setText] = useState<string>("");
-  const [tone, setTone] = useState<number>(0);
-  const [length, setLength] = useState<number>(1);
-  const [rewritesCount, setRewritesCount] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [rewrites, setRewrites] = useState<string[]>([""]);
-  const rewritesModalRef = useRef<null | HTMLLabelElement>(null);
-  const moreModalRef = useRef<null | HTMLLabelElement>(null);
-  const newDocumentModalRef = useRef<null | HTMLLabelElement>(null);
-  const [moreMenuOpen, setMoreMenuOpen] = useState<boolean>(false);
-  const [generateTextWithAIPrompt, setGenerateTextWithAIPrompt] = useState<string>("");
-  const [user, setUser] = useState<any>({});
-  const [showMenu, setShowMenu] = useState<boolean>(false);
+export default function Main() {
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
-  //Documents
-  const [documents, setDocuments] = useState<any[]>([]);
-  const [selectedDocument, setSelectedDocument] = useState<number>(-1);
-  const [newDocumentTitle, setNewDocumentTitle] = useState<string>("");
-  const [loadingDocument, setLoadingDocument] = useState<boolean>(false);
-  const [creatingDocument, setCreatingDocument] = useState<boolean>(false);
-
-  const getDocument = async (documentId: string) => {
-    if (selectedDocument === -1 || !documentId) return;
-
-    setLoadingDocument(true);
-    const config = {
-      method: "POST",
-      url: `${serverURL}/documents/by-id`,
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": `application/json`,
-      },
-      data: {
-        documentId: documentId
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem("token")) {
+        setLoggedIn(true);
       }
+    }
+  }, []);
+
+  const [color, setColor] = useState(false)
+
+  const changeColor = () => {
+    if (window.scrollY >= window.innerHeight - 350) {
+      setColor(true)
+    } else {
+      setColor(false)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', changeColor)
+    return () => {
+      window.removeEventListener('scroll', changeColor)
+    }
+  }, [])
+
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const features = [
+    {
+      icon: <FaRobot />,
+      title: "AI Rewriting & Grammar Correcting",
+      subtitle: "Effortlessly enhance your writing with AI-powered rewriting and precise grammar correcting."
+    },
+    {
+      icon: <FiEdit />,
+      title: "Rewrites in Custom Tones & Length",
+      subtitle: "Personalize your text with customizable rewrites in various tones and lengths."
+    },
+    {
+      icon: <FiFileText />,
+      title: "Multiple Document Creation",
+      subtitle: "Seamlessly create and manage multiple documents for all your writing needs."
+    },
+    {
+      icon: <FiMonitor />,
+      title: "Admin Panel",
+      subtitle: "Effortlessly manage shop items, purchases, and payment methods through a user-friendly admin interface."
+    },
+    {
+      icon: <FiCreditCard />,
+      title: "Payment Integration",
+      subtitle: "Accept payments and make income through integrated payment gateways like Stripe, PayPal & Razorpay."
+    },
+    {
+      icon: <FiSmartphone />,
+      title: "Simple & Beautiful User Interface",
+      subtitle: "Enjoy a seamless and visually appealing user experience built using DaisyUI, a user-friendly Tailwind CSS component library."
+    }
+  ];
+
+  const howItWorks = [
+    {
+      title: "Create Classes & Evaluators",
+      subtitle: "Effortlessly organize classes, add students, and create evaluators. Define class details and streamline the setup for a seamless evaluation process.",
+    },
+    {
+      title: "Upload Answer Sheets",
+      subtitle: `Upload question papers and answer keys, and let ${appName}&apos;s advanced AI algorithms take charge. Effortlessly upload answer sheets, eliminating manual grading hassles.`,
+    },
+    {
+      title: "Explore Detailed Results",
+      subtitle: "Dive into detailed results effortlessly. Navigate between &apos;All Students&apos; for a quick overview and &apos;Detailed View&apos; for a granular analysis. Gain insights into individual performances and make informed decisions.",
+    }
+  ];
+
+  const [videoPreview, setVideoPreview] = useState(false);
+
+  const [shopItems, setShopItems] = useState<any>({});
+  const [faq, setFAQ] = useState<any>([]);
+
+  const getShopItems = async () => {
+    const config = {
+      method: "GET",
+      url: `${serverURL}/shop`,
     };
 
     axios(config)
       .then((response) => {
-        setLoadingDocument(false);
-        setText(response.data.content ?? "");
-        setTone(response.data.settings.tone ?? 0);
-        setLength(response.data.settings.length ?? 1);
-        setRewritesCount(response.data.settings.rewrites ?? 1);
+        setShopItems(response.data);
       })
-      .catch((error) => {
-        setLoadingDocument(false);
-      });
   }
 
-  const getDocuments = async () => {
-    var response = {
-      "user": {
-        "name": localStorage.getItem("token") === loginAdminResponse.token ? "Admin" : "User",
-        "email": localStorage.getItem("token") === loginAdminResponse.token ? "admin@rewordai.com" : "user@rewordai.com",
-        "type": localStorage.getItem("token") === loginAdminResponse.token ? "admin" : "user"
-      },
-      "documents": localStorage.getItem("token") === loginAdminResponse.token ? [] : [
+  const getFAQ = async () => {
+    const config = {
+      method: "GET",
+      url: `${serverURL}/faq`,
+    };
+
+    axios(config)
+      .then((response) => {
+        setFAQ(response.data);
+      })
+  }
+
+  useEffect(() => {
+    getShopItems();
+    getFAQ();
+  }, []);
+
+  return <main className="flex flex-col realtive overflow-x-hidden">
+    {videoPreview && <div className='fixed z-[999] video-preview w-full h-full bg-black p-20' onClick={() => setVideoPreview(false)}>
+      <FiX className='text-4xl absolute top-5 right-5 text-white cursor-pointer' onClick={() => setVideoPreview(false)} />
+      <iframe allowFullScreen className='w-full h-full' src="https://www.youtube.com/embed/kyPSFg3fY30" title="RewordAI | AI Rewriter and Grammar Corrector SaaS Platform | Envato Codecanyon | Full Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+    </div>}
+    <div id="home" className='min-h-screen w-screen bg-gradient-to-b from-purple-400 via-violet-500 to-indigo-600 flex flex-col justify-center items-center'>
+      <div className={"flex z-50 items-center justify-between fixed top-0 w-full p-3 md:px-10 duration-200 backdrop-blur-md border-b border-[rgba(255,255,255,0.1)] " + (color ? "bg-white" : "text-white")}>
+        <Link href="/"><div className="text-lg">🤖 {appName} 📝</div></Link>
+        <div className='hidden md:flex'>
+          <Link href={"#home"}><label onClick={() => setSelectedTab(0)} className={'mr-5 btn btn-sm btn-ghost ' + (selectedTab === 0 ? "btn-active text-white " : "") + (color ? " text-black" : "")}>Home</label></Link>
+          <Link href={"#features"}><label onClick={() => setSelectedTab(1)} className={'mr-5 btn btn-sm btn-ghost ' + (selectedTab === 1 ? "btn-active text-white " : "") + (color ? " text-black" : "")}>Features</label></Link>
+          <Link href={"#flexible-pricing"}><label onClick={() => setSelectedTab(2)} className={'mr-5 btn btn-sm btn-ghost ' + (selectedTab === 2 ? "btn-active text-white " : "") + (color ? " text-black" : "")}>Pricing</label></Link>
+          <Link href={"#have-a-question"}><label onClick={() => setSelectedTab(3)} className={'mr-5 btn btn-sm btn-ghost ' + (selectedTab === 3 ? "btn-active text-white " : "") + (color ? " text-black" : "")}>FAQ</label></Link>
+        </div>
+        {loggedIn ?
+          <Link href={"/home"}><label className={'btn btn-primary ' + (!color ? "glass text-white" : "")}><FiHome /> Home</label></Link>
+          : <Link href={"/login"}><label className={'btn btn-primary ' + (!color ? "glass text-white" : "")}><FiLogIn /> Sign In</label></Link>}
+      </div>
+      <motion.h1
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: -30 }}
+        transition={{ type: "spring", stiffness: 100, duration: 0.1}}
+        className='duration-200 font-black text-5xl md:text-7xl text-white w-full text-center'>🤖 Ultimate AI<br />Rewriter📝</motion.h1>
+      <motion.p initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 0.8, y: -30 }}
+        transition={{ type: "spring", stiffness: 100, duration: 0.1, delay: 0.2 }}
+        className='duration-200 text-center mt-5 font-normal text-md md:text-xl text-white w-full'>A powerful AI tool to revolutionize your content creation process.<br />Seamlessly create, rewrite, and enhance content with advanced AI-driven technology.</motion.p>
+      <motion.button initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: -30 }}
+        transition={{ type: "spring", stiffness: 100, duration: 0.1, delay: 0.4 }} className="mt-10 btn btn-md md:btn-lg glass text-white btn-primary" onClick={() => setVideoPreview(true)}><FiPlayCircle /> See how it works</motion.button>
+      <Link href={loggedIn ? "/home" : "/login"}><motion.button initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 0.7, y: -30 }}
+        transition={{ type: "spring", stiffness: 100, duration: 0.1, delay: 0.6 }} className="mt-5 btn btn-sm md:btn-md text-white btn-ghost">{loggedIn ? "Go to home" : "Sign in"}<FiArrowRight /></motion.button></Link>
+    </div>
+    <div id="features" className='min-h-screen w-screen bg-white flex flex-col items-center py-20 md:p-20'>
+      <h1 className='text-4xl md:text-5xl font-bold mb-20'>Features</h1>
+      <div className='flex flex-wrap justify-evenly items-center w-full md:w-3/4'>
+        {features.map((feature: any, i) => {
+          return <div key={i} className='flex group m-5'>
+            <div className='bg-gray-100 group-hover:bg-black group-hover:text-white group-hover:scale-110 duration-200 text-3xl flex justify-center items-center w-20 h-20 rounded-lg mr-4'>
+              {feature?.icon}
+            </div>
+            <div className='flex flex-col'>
+              <p className='text-xl font-semibold'>{feature?.title}</p>
+              <p className='text-lg max-w-sm'>{feature?.subtitle}</p>
+            </div>
+          </div>
+        })}
+      </div>
+    </div>
+    <div id="how-it-works" className='text-white min-h-screen w-screen flex flex-col items-center py-20 md:p-20 bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-700 '>
+      <h1 className='text-4xl md:text-5xl font-bold mb-10'>AI-Powered Rewriting</h1>
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img1} width={500} alt='Img1' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img2} width={500} alt='Img2' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img3} width={500} alt='Img3' />
+    </div>
+    <div id="how-it-works" className='text-white min-h-screen w-screen flex flex-col items-center py-20 md:p-20 bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-700 '>
+      <h1 className='text-4xl md:text-5xl font-bold mb-10'>And more...</h1>
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img4} width={500} alt='Img4' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img5} width={500} alt='Img5' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img6} width={500} alt='Img6' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img7} width={500} alt='Img7' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img8} width={500} alt='Img8' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img9} width={500} alt='Img9' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img10} width={500} alt='Img10' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img11} width={500} alt='Img11' />
+      <Image className='mb-3 hover:scale-105 duration-200' src={Img12} width={500} alt='Img12' />
+    </div>
+    <div id="flexible-pricing" className='min-h-screen w-screen flex flex-col items-center py-20 md:p-20 bg-white '>
+      <div className='flex flex-col items-center w-full border rounded-2xl p-10'>
+        <h1 className='text-4xl md:text-5xl font-bold mb-10'>Flexible Pricing</h1>
+        <div className='flex flex-col md:flex-row flex-wrap justify-evenly items-center w-full md:w-3/4 mb-14'>
+          {shopItems?.items?.map((item: any, i: number) => {
+            return <div key={i} className='min-w-[250px] shadow-lg p-10 rounded-xl flex flex-col group m-5 max-w-xs items-center hover:scale-105 duration-100'>
+              <p className='text-center mt-10 duration-200 text-xl'>{item?.title}</p>
+              <p className='flex items-start text-center mt-10 duration-200 text-4xl mb-7'>{currencySymbol}<span className='text-6xl font-bold'>{item?.price}</span></p>
+              <p className='flex text-xl duration-200 items-center my-2'><FiSettings className='mr-2' />{item?.rewriteLimit} Rewrites</p>
+            </div>
+          })}
+        </div>
+        <div className='flex items-center'>
+          <div className='mr-6'>
+            <FiLock className='text-2xl' />
+          </div>
+          <div>
+            <p className='font-semibold'>Secure Payment Gateways:</p>
+            <p>{shopItems?.paymentMethods?.stripe && "Stripe,"} {shopItems?.paymentMethods?.paypal && "PayPal,"} {shopItems?.paymentMethods?.razorpay && "Razorpay"}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="have-a-question" className='min-h-screen w-screen flex flex-col items-center py-20 md:p-20 bg-white '>
+      <h1 className='text-4xl md:text-5xl font-bold mb-4'>Have a question?</h1>
+      <p className='text-xl md:text-2xl text-center w-full mb-20'>We&apos;re here to help. Check out our FAQ section or reach out to us directly.</p>
+      <div className='flex flex-col md:flex-row flex-wrap justify-evenly items-center w-full md:w-3/4'>
         {
-          "settings": {
-            "tone": 0,
-            "length": 1,
-            "rewrites": 1
-          },
-          "_id": "65b498d2295c9db5d4d0d0b0",
-          "userId": "65b21c9d4a0adf48311fe6c1",
-          "title": "My Document",
-          "content": "",
-          "createdAt": "2024-01-27T05:46:58.498Z",
-          "updatedAt": "2024-01-27T05:47:00.043Z",
-          "__v": 0
-        },
-        {
-          "settings": {
-            "tone": 3,
-            "length": 1,
-            "rewrites": 7
-          },
-          "_id": "65b21cd54a0adf48311fe6cb",
-          "userId": "65b21c9d4a0adf48311fe6c1",
-          "title": "Assignment",
-          "content": "Renewable energy sources such as solar and wind power are essential for reducing climate change effects and promoting sustainable development.",
-          "createdAt": "2024-01-25T08:33:25.257Z",
-          "updatedAt": "2024-02-01T23:17:57.570Z",
-          "__v": 0
+          faq.map((item: any, index: number) => {
+            return <div key={index} className="collapse collapse-plus bg-base-200 mb-2">
+              <input type="radio" name="my-accordion-3" defaultChecked />
+              <div className="collapse-title text-xl font-medium">
+                {item.question}
+              </div>
+              <div className="collapse-content">
+                <p>{item.answer}</p>
+              </div>
+            </div>
+          })
         }
-      ]
-    };
-
-
-    setDocuments(response.documents);
-    setUser(response.user);
-    if (response.documents.length > 0) {
-      setSelectedDocument(0);
-    }
-    else {
-      setSelectedDocument(-1);
-    }
-  }
-
-  const createDocument = async () => {
-    if (!newDocumentTitle || creatingDocument || loadingDocument) return;
-
-    toast.error("This feature is not available in the demo version!");
-  }
-
-  const editDocument = async () => {
-    toast.error("This feature is not available in the demo version!");
-  }
-
-  const deleteDocument = async () => {
-    toast.error("This feature is not available in the demo version!");
-  }
-
-  const [theme, setTheme] = useState<null | any | string>(
-    "light"
-  );
-
-  const toggleDarkMode = (x: any) => {
-    if (x.target.checked) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  }
-
-  const [rewriteCount, setRewriteCount] = useState<number>(-1);
-
-  const getRewrites = async () => {
-    var response = {
-      "_id": "65b21c9d4a0adf48311fe6c3",
-      "userId": "65b21c9d4a0adf48311fe6c1",
-      "rewrites": localStorage.getItem("token") === loginAdminResponse.token ? 96 : 1479,
-      "createdAt": "2024-01-25T08:32:29.914Z",
-      "updatedAt": "2024-02-01T23:14:21.161Z",
-      "__v": 0
-    };
-
-    setRewriteCount(response.rewrites);
-  }
-
-  const rewrite = async () => {
-    if (text.length < 3 || loading) return;
-
-    toast.error("This feature is not available in the demo version!");
-  }
-
-  const doMore = async (type: number) => {
-    const doMoreType = ["continue-writing", "summarise", "explain", "give-example", "counterargument", "define", "shorten", "expand"][type];
-    if (text.length < 3 || loading) return;
-
-    toast.error("This feature is not available in the demo version!");
-  }
-
-  const generateTextWithAI = async () => {
-    if (generateTextWithAIPrompt.length < 5 || loading) return;
-
-    toast.error("This feature is not available in the demo version!");
-  }
-
-  const handleKeyDown = (event: any) => {
-    if (event.altKey && event.key === "n") {
-      console.log("New document");
-      setNewDocumentTitle("");
-      newDocumentModalRef.current?.click();
-    }
-
-    if (event.key === "Escape") {
-      setSelectedDocument(-1);
-    }
-  };
-
-  useEffect(() => {
-    getRewrites();
-    getDocuments();
-
-    document.addEventListener("keydown", handleKeyDown);
-    if (typeof window !== 'undefined') {
-      setTheme(localStorage.getItem("theme") ? localStorage.getItem("theme") : "light");
-      if (!localStorage.getItem("token")) {
-        window.location.href = "/login";
-      }
-    }
-  }, [])
-
-
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-    const localTheme: string = localStorage.getItem("theme")!.toString();
-    document.querySelector("html")!.setAttribute("data-theme", localTheme);
-  }, [theme]);
-
-  const autoSaveDocument = (documentId: string) => {
-    if (!documentId) return;
-  }
-
-  //Autosave document
-  useEffect(() => {
-    if (selectedDocument === -1) return;
-    const timer = setTimeout(() => {
-      autoSaveDocument(documents[selectedDocument]?._id);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [text, tone, length, rewritesCount]);
-
-  useEffect(() => {
-    getDocument(documents[selectedDocument]?._id);
-  }, [selectedDocument, documents]);
-
-  return (
-    <main className="flex bg-base-100 h-screen w-screen p-2 max-sm:p-0" onClick={() => {
-      if (moreMenuOpen) setMoreMenuOpen(false);
-    }}>
-      {/* Sidebar */}
-      <div className={'flex flex-col p-5 min-w-[275px] max-w-[15vw] h-full rounded-md ' + (!showMenu ? "max-sm:hidden " : "max-sm:fixed max-sm:w-full max-sm:h-full max-sm:max-w-none bg-base-100 max-sm:z-50 ")}>
-        <div className="flex justify-between items-center max-sm:mb-4">
-          <p className="mb-5 font-semibold max-sm:mb-3">📝 {appName} ✨<Link href="/shop"></Link></p>
-          <div className="hidden max-sm:flex justify-end mb-3">
-            <button className="btn btn-square btn-sm" onClick={() => setShowMenu(false)}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-          </div>
-        </div>
-        <label className='btn btn-primary' htmlFor='newdocument_modal' onClick={() => setNewDocumentTitle("")}><FiPlus /> NEW DOCUMENT</label>
-        <div className='p-0 my-2 h-full w-full overflow-hidden hover:overflow-y-auto'>
-          {
-            documents.map((document: any, i: number) => {
-              return <div key={i} className={(selectedDocument === i ? ' bg-base-200 ' : ' bg-transparent hover:bg-base-200 ') + 'cursor-pointer flex flex-col px-3 py-2 rounded-md w-full mb-1'} onClick={() => { setSelectedDocument(i); setShowMenu(false) }}>
-                <div className='flex justify-start items-center'>
-                  <div className='w-fit mr-2'>
-                    <FiFileText />
-                  </div>
-                  <div className='flex flex-col items-start'>
-                    <p className='text-sm text-ellipsis line-clamp-1 font-semibold'>{document.title}</p>
-                  </div>
-                </div>
-                {selectedDocument === i ?
-                  <div className='flex mt-2'>
-                    <label htmlFor='editdocument_modal' className='cursor-pointer flex justify-center items-center w-full p-2 bg-base-300 rounded-md mr-1 hover:bg-gray-500 hover:text-white' onClick={() => setNewDocumentTitle(documents[i].title)}>
-                      <FiEdit /><p className='ml-2 text-xs'>Edit</p>
-                    </label>
-                    <label htmlFor='deletedocument_modal' className='cursor-pointer flex justify-center items-center w-full p-2 bg-base-300 rounded-md hover:bg-red-500 hover:text-white'>
-                      <FiTrash /><p className='ml-2 text-xs'>Delete</p>
-                    </label>
-                  </div> : ""}
-              </div>
-            })
-          }
-        </div>
-        <hr />
-        <div className="flex items-center justify-between my-4">
-          <p>{rewriteCount} rewrites left</p>
-          <Link href="/shop"><button className="btn btn-sm"><FiShoppingCart /> SHOP</button></Link>
-        </div>
-        {user?.type === "admin" ? <Link href="/admin/dashboard"><label className='btn mb-2 w-full'><FiUser /> ADMIN PANEL <FiArrowRight /></label></Link> : ""}
-        <div tabIndex={0} className='cursor-pointer dropdown dropdown-top flex items-center hover:bg-base-200 p-2 rounded-lg'>
-          <div className='flex items-center justify-between w-full'>
-            <div className='flex items-center'>
-              <div className="avatar placeholder mr-2">
-                <div className="bg-blue-700 text-white mask mask-squircle w-10">
-                  <span><FiUser /></span>
-                </div>
-              </div>
-              <p className='font-semibold'>{user?.name}</p>
-            </div>
-            <FiMoreHorizontal />
-          </div>
-          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mb-2">
-            <label htmlFor='settings_modal'><li className='flex'><p><FiSettings />Settings</p></li></label>
-            <Link href="/shop"><label><li className='flex'><p><FiShoppingCart />Shop</p></li></label></Link>
-            <Link href="/purchases"><label><li className='flex'><p><FiShoppingBag />My Purchases</p></li></label></Link>
-            <hr className='my-2' />
-            <li className='flex' onClick={() => {
-              localStorage.clear()
-              window.location.href = "/login";
-            }}><p><FiLogOut className="text-red-600" />Logout</p></li>
-          </ul>
+      </div>
+    </div>
+    <div id="get-started" className='text-white w-screen flex flex-col items-center py-20 md:p-20 bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900'>
+      <h1 className='text-4xl md:text-7xl font-bold mb-5 text-center'>Unleash your<br />true potential.</h1>
+      <Link href={"#home"}><button className="mt-10 btn btn-md md:btn-lg glass text-white btn-primary"><FiZap /> Try RewordAI Today!</button></Link>
+      <p className='opacity-75 duration-200 text-center mt-10 font-normal text-md md:text-xl text-white w-full'>Experience the power of {appName} in revolutionizing your content creation process. <br />Get started today and unlock a world of possibilities.</p>
+    </div>
+    <div className='text-white w-screen flex flex-col items-center py-20 md:px-32 bg-black'>
+      <div className='w-full flex flex-col md:flex-row items-center justify-between'>
+        <Link href="/home"><div className="text-lg">🤖 {appName} 📝</div></Link>
+        <div className='mt-10 md:mt-0 flex flex-col md:flex-row items-center'>
+          <Link className='flex items-center my-2 md:ml-10' href="#"><FiInstagram className='mr-2' /><p>Instagram</p></Link>
+          <Link className='flex items-center my-2 md:ml-10' href="#"><FiTwitter className='mr-2' /><p>X</p></Link>
+          <Link className='flex items-center my-2 md:ml-10' href="#"><FiFacebook className='mr-2' /><p>Facebook</p></Link>
         </div>
       </div>
-      {/* Main */}
-      <div className='flex flex-col items-center justify-center ml-2 p-5 border-base-300 border-[1px] w-full h-full rounded-lg 2xl:items-center max-sm:ml-0 max-sm:border-none max-sm:p-2 max-sm:items-start max-sm:justify-start'>
-        {(loadingDocument || creatingDocument) ? <div className="flex items-center"><span className="loading loading-spinner mr-4"></span><p>{loadingDocument ? "Loading" : "Creating"} Document...</p></div> : selectedDocument === -1 ? <div className='select-none flex flex-col justify-center items-center w-full h-full'>
-          <p className='text-5xl font-semibold mb-2'>📝 {appName} ✨</p>
-          <p className='text-center'>Create a new document or select an existing document to start rewriting!</p>
-          <div className='flex flex-wrap justify-center mt-7'>
-            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>
-              <p className='font-semibold text-md mb-2'>✨ AI Rewriting & Grammar Check</p>
-              <p className='text-sm opacity-70'>Effortlessly enhance your writing with AI-powered rewriting and precise grammar checking.</p>
-            </div>
-            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>
-              <p className='font-semibold text-md mb-2'>🎭 Rewrites in Custom Tones & Length</p>
-              <p className='text-sm opacity-70'>Personalize your text with customizable rewrites in various tones and lengths.</p>
-            </div>
-            <div className='bg-base-300 rounded-lg p-4 hover:bg-base-200 max-w-xs m-2'>
-              <p className='font-semibold text-md mb-2'>📝 Multiple Document Creation</p>
-              <p className='text-sm opacity-70'>Seamlessly create and manage multiple documents for all your writing needs.</p>
-            </div>
-          </div>
-          <div className='flex mt-5'>
-            Press <kbd className="kbd kbd-sm mx-2">Alt</kbd> + <kbd className="kbd kbd-sm mx-2">N</kbd> to create a new document.
-          </div>
-        </div> : <div className="animate-fade-in-bottom flex flex-col w-full max-w-[50vw] max-sm:max-w-none">
-          <div className="hidden max-sm:flex justify-end mb-3">
-            <button className="btn btn-square" onClick={() => setSelectedDocument(-1)}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-          </div>
-          <div className="flex mb-4 items-center max-sm:flex-wrap">
-            <p className="mr-2 font-semibold">Tone: </p>
-            {
-              ["✨ Normal", "👟 Casual", "💼 Formal", "📝 Academic", "📖 Creative"].map((e, i: number) => {
-                return <button key={i} className={'btn btn-sm mr-2 max-sm:mb-2 ' + (tone == i ? 'btn-primary' : '')} onClick={() => setTone(i)}>{e}</button>
-              })
-            }
-          </div>
-          <div className="flex mb-4 items-center max-sm:flex-wrap">
-            <p className="mr-2 font-semibold">Length: </p>
-            {
-              ["📝 Short", "📄 Medium", "📚 Long"].map((e, i: number) => {
-                return <button key={i} className={'btn btn-sm mr-2 max-sm:mb-2 ' + (length == i ? 'btn-primary' : '')} onClick={() => setLength(i)}>{e}</button>
-              })
-            }
-          </div>
-          <div className="flex mb-3 items-center">
-            <p className="mr-2 font-semibold">Rewrites: </p>
-            <input type="number" className="input input-bordered w-20" onChange={(x) => setRewritesCount(parseInt(x.target.value))} value={rewritesCount} min={1} max={10} placeholder="1" />
-          </div>
-          <p className="flex items-center font-semibold text-xl mb-1 mt-4"><FiFileText className="mr-2" /> {documents[selectedDocument]?.title}</p>
-          <textarea className='bg-base-100 mt-5 text-md min-h-[25vh] p-2 rounded-md outline-none border-2 border-base-300' onChange={(x) => setText(x.target.value)} value={text} placeholder='Write or paste your text here...' autoFocus></textarea>
-          <div className="flex mt-2"><label htmlFor="generatetext_modal" className="btn btn-xs max-sm:btn-sm">Generate text with AI</label></div>
-          <div className="mt-7 flex items-center max-sm:flex-col">
-            <button className={'btn btn-primary max-sm:w-full max-sm:mb-3 ' + (text.length < 3 || loading ? "opacity-50" : "")} onClick={() => rewrite()}>{loading ? <span className="loading loading-spinner"></span> : "📝 "}Rewrite</button>
-            <details className="dropdown dropdown-top max-sm:w-full" onToggle={(x) => setMoreMenuOpen(x.currentTarget.open)} open={moreMenuOpen}>
-              <summary tabIndex={0} className='btn ml-2 max-sm:w-full max-sm:ml-0'>✨ More</summary>
-              <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li onClick={() => { doMore(0); setMoreMenuOpen(false) }}><a>➡️ Continue Writing</a></li>
-                <li onClick={() => { doMore(1); setMoreMenuOpen(false) }}><a>📝 Summarise</a></li>
-                <li onClick={() => { doMore(2); setMoreMenuOpen(false) }}><a>🧠 Explain</a></li>
-                <li onClick={() => { doMore(3); setMoreMenuOpen(false) }}><a>☝️ Give an example</a></li>
-                <li onClick={() => { doMore(4); setMoreMenuOpen(false) }}><a>🎯 Counterargument</a></li>
-                <li onClick={() => { doMore(5); setMoreMenuOpen(false) }}><a>📖 Define</a></li>
-                <li onClick={() => { doMore(6); setMoreMenuOpen(false) }}><a>✏️ Shorten</a></li>
-                <li onClick={() => { doMore(7); setMoreMenuOpen(false) }}><a>📚 Expand</a></li>
-              </ul>
-            </details>
-          </div>
-          {rewriteCount !== -1 ? <p className="mt-3 text-sm text-gray-500">{rewriteCount} rewrites left</p> : ""}
-        </div>}
-        <label htmlFor='newdocument_modal' className='sm:hidden absolute right-5 bottom-5 btn btn-primary btn-square'><FiPlus /></label>
-        {selectedDocument === -1 ? <button className='sm:hidden absolute left-5 top-5 btn btn-square' onClick={() => setShowMenu(!showMenu)}><FiMenu /></button> : ""}
-        {/* New Document Modal */}
-        <input type="checkbox" id="newdocument_modal" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="flex items-center font-bold text-lg"><FiFileText className="mr-1" /> New Document</h3>
-            <p className="flex items-center py-4"><FiType className='mr-2' />Title</p>
-            <input className="input input-bordered w-full" placeholder="What is this document about?" type="text" onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                createDocument();
-                newDocumentModalRef.current?.click();
-              }
-            }} onChange={(x) => setNewDocumentTitle(x.target.value)} value={newDocumentTitle} />
-            <div className="modal-action">
-              <label htmlFor="newdocument_modal" className="btn">Cancel</label>
-              <label htmlFor="newdocument_modal" className="btn btn-primary" onClick={() => createDocument()}>Create Document ✨</label>
-            </div>
-          </div>
-          <label className="modal-backdrop" htmlFor="newdocument_modal">Cancel</label>
-          <label ref={newDocumentModalRef} htmlFor="newdocument_modal" hidden></label>
-        </div>
-        {/* Edit Document Modal */}
-        <input type="checkbox" id="editdocument_modal" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="flex items-center font-bold text-lg"><FiEdit className="mr-1" /> Edit Document</h3>
-            <p className="flex items-center py-4"><FiType className='mr-2' />Title</p>
-            <input className="input input-bordered w-full" placeholder="What is this chat about?" type="text" onChange={(x) => setNewDocumentTitle(x.target.value)} value={newDocumentTitle} />
-            <div className="modal-action">
-              <label htmlFor="editdocument_modal" className="btn">Cancel</label>
-              <label htmlFor="editdocument_modal" className="btn btn-primary" onClick={() => editDocument()}>Save</label>
-            </div>
-          </div>
-          <label className="modal-backdrop" htmlFor="editdocument_modal">Cancel</label>
-        </div>
-        {/* Delete Document Modal */}
-        <input type="checkbox" id="deletedocument_modal" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="flex items-center font-bold text-lg"><FiTrash className="mr-1" /> Delete Document</h3>
-            <p className="py-4">Are you sure want to delete this document?</p>
-            <div className="modal-action">
-              <label htmlFor="deletedocument_modal" className="btn">Cancel</label>
-              <label htmlFor="deletedocument_modal" className="btn btn-error" onClick={() => deleteDocument()}>Delete</label>
-            </div>
-          </div>
-          <label className="modal-backdrop" htmlFor="deletedocument_modal">Cancel</label>
-        </div>
-        {/* Rewrites Modal */}
-        <label ref={rewritesModalRef} htmlFor="rewrites_modal" hidden></label>
-        <input type="checkbox" id="rewrites_modal" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">✨📝 Rewrites ({rewrites.length})</h3>
-            <div className="max-h-[40vh] overflow-y-auto">
-              {rewrites.map((e, i: number) => {
-                return <div key={i} className="hover:bg-base-200 rounded-lg px-2 cursor-pointer" onClick={() => { setText(e); }}>
-                  <p className="py-4">{e}<button className="btn btn-sm ml-2" onClick={() => {
-                    navigator.clipboard.writeText(e);
-                    toast.success("Copied to clipboard!");
-                  }}><FiCopy /></button></p>
-                </div>
-              })}
-            </div>
-            <div className="modal-action">
-              <label htmlFor="rewrites_modal" className="btn">Close</label>
-            </div>
-          </div>
-        </div>
-        {/* More Modal */}
-        <input type="checkbox" id="generatetext_modal" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">✨ Generate Text with AI</h3>
-            <textarea className="textarea textarea-bordered w-full" placeholder="Your AI prompt" onChange={(x) => setGenerateTextWithAIPrompt(x.target.value)} value={generateTextWithAIPrompt} autoFocus></textarea>
-            <div className="modal-action">
-              <label htmlFor="generatetext_modal" className="btn">Close</label>
-              <label htmlFor={generateTextWithAIPrompt.length > 5 ? "generatetext_modal" : ""} className={"btn btn-primary " + (generateTextWithAIPrompt.length < 5 ? "opacity-50" : "")} onClick={() => generateTextWithAI()}>✨ Generate</label>
-            </div>
-          </div>
-          <label ref={moreModalRef} className="modal-backdrop" htmlFor="generatetext_modal">Close</label>
-        </div>
-        {/* Settings Modal */}
-        <input type="checkbox" id="settings_modal" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="flex items-center font-bold text-lg"><FiSettings className="mr-1" /> Settings</h3>
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <p className="flex items-center py-4"><FiMoon className='mr-2' />Dark Theme</p>
-                <input type="checkbox" className="toggle" checked={theme === "dark"} onChange={(x) => toggleDarkMode(x)} />
-              </label>
-            </div>
-            <div className="modal-action">
-              <label htmlFor="settings_modal" className="btn">Close</label>
-            </div>
-          </div>
-          <label className="modal-backdrop" htmlFor="settings_modal">Cancel</label>
-        </div>
-      </div>
-      <ToastContainer />
-    </main >
-  )
+      <div className="divider divider-neutral"></div>
+      <p>© 2024 {appName}. All rights reserved.</p>
+    </div>
+    <button className='btn btn-primary btn-lg btn-square fixed z-[100] bottom-10 right-10' onClick={() => window.open("https://codecanyon.net/item/rewordai-ai-rewriter-and-grammar-corrector-saas-platform/50500483")}>
+      <svg fill="#0ac994" xmlns="http://www.w3.org/2000/svg" width="19.824" height="22.629" viewBox="0 0 19.824 22.629">
+        <path d="M17.217,9.263c-.663-.368-2.564-.14-4.848.566-4,2.731-7.369,6.756-7.6,13.218-.043.155-.437-.021-.515-.069a9.2,9.2,0,0,1-.606-7.388c.168-.28-.381-.624-.48-.525A11.283,11.283,0,0,0,1.6,17.091a9.84,9.84,0,0,0,17.2,9.571c3.058-5.481.219-16.4-1.574-17.4Z" transform="translate(-0.32 -9.089)"></path>
+      </svg>
+    </button>
+  </main>
 }
