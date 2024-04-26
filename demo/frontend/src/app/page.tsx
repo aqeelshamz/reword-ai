@@ -100,37 +100,52 @@ export default function Main() {
 
   const [videoPreview, setVideoPreview] = useState(false);
 
-  const [shopItems, setShopItems] = useState<any>({});
-  const [faq, setFAQ] = useState<any>([]);
+  const shopItems = {
+    items: [
+      {
+        "_id": "65b223b50d34920db58463c2",
+        "enable": true,
+        "userId": "65b21c0d4a0adf48311fe652",
+        "title": "Premium",
+        "rewriteLimit": 1200,
+        "price": 999,
+        "type": 1,
+        "createdAt": "2024-01-25T09:02:45.555Z",
+        "updatedAt": "2024-01-25T09:04:07.599Z",
+        "__v": 0
+      },
+      {
+        "_id": "65b223c70d34920db58463c7",
+        "enable": true,
+        "userId": "65b21c0d4a0adf48311fe652",
+        "title": "Basic 100",
+        "rewriteLimit": 200,
+        "price": 129,
+        "type": 1,
+        "createdAt": "2024-01-25T09:03:03.769Z",
+        "updatedAt": "2024-02-02T23:33:09.574Z",
+        "__v": 0
+      }
+    ],
+    paymentMethods: {
+      stripe: true,
+      paypal: true,
+      razorpay: true
+    }
+  };
 
-  const getShopItems = async () => {
-    const config = {
-      method: "GET",
-      url: `${serverURL}/shop`,
-    };
-
-    axios(config)
-      .then((response) => {
-        setShopItems(response.data);
-      })
-  }
-
-  const getFAQ = async () => {
-    const config = {
-      method: "GET",
-      url: `${serverURL}/faq`,
-    };
-
-    axios(config)
-      .then((response) => {
-        setFAQ(response.data);
-      })
-  }
-
-  useEffect(() => {
-    getShopItems();
-    getFAQ();
-  }, []);
+  const faq: any = [
+    {
+      "_id": "65c890ef93afbe3c9638eb6d",
+      "question": "How does it generate responses?",
+      "answer": "RewordAI make use of OpenAI’s GPT-4 model for generating responses. The model is trained on a large dataset of text from the internet and is capable of generating human-like responses to a wide range of prompts."
+    },
+    {
+      "_id": "65c890ef93afbe3c9638eb63",
+      "question": "How can I contact support?",
+      "answer": "You can contact our support team by emailing us at aqeelten@gmail.com"
+    }
+  ];
 
   return <main className="flex flex-col realtive overflow-x-hidden">
     {videoPreview && <div className='fixed z-[999] video-preview w-full h-full bg-black p-20' onClick={() => setVideoPreview(false)}>
@@ -153,7 +168,7 @@ export default function Main() {
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: -30 }}
-        transition={{ type: "spring", stiffness: 100, duration: 0.1}}
+        transition={{ type: "spring", stiffness: 100, duration: 0.1 }}
         className='duration-200 font-black text-5xl md:text-7xl text-white w-full text-center'>🤖 Ultimate AI<br />Rewriter📝</motion.h1>
       <motion.p initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 0.8, y: -30 }}
