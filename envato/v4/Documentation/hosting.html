@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RewordAI | Hosting</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.50.5/dist/full.css" rel="stylesheet">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap");
+
+        * {
+            font-family: "Golos Text", sans-serif;
+        }
+    </style>
+    <link rel="icon" href="./images/icon.png" type="image/png" />
+    <link href="./css/style.min.css" rel="stylesheet" type="text/css" />
+    <script src="./js/script.min.js" defer></script>
+</head>
+
+<body class="flex flex-col items-center bg-base-200 text-base-content p-5">
+    <div class="w-full max-w-7xl">
+        <h3 id="hosting" class="font-bold my-4 text-3xl">🚀 Hosting</h3>
+        <p class="mb-6">
+            Hosting your <b>RewordAI</b> application involves deploying both the backend and frontend components to a server
+            or a hosting platform. Below are detailed step-by-step instructions for hosting on various platforms including
+            <b>DigitalOcean</b>, <b>Vercel</b>, and <b>Hostinger</b>.
+        </p>
+
+        <!-- Table of Contents -->
+        <div class="mb-8">
+            <h4 class="font-semibold text-2xl mb-4">📑 Table of Contents</h4>
+            <ul class="list-disc list-inside space-y-2">
+                <li><a href="#digitalocean" class="link link-primary">1. Hosting on DigitalOcean</a></li>
+                <li><a href="#vercel" class="link link-primary">2. Hosting on Vercel</a></li>
+                <li><a href="#hostinger" class="link link-primary">3. Hosting on Hostinger</a></li>
+                <li><a href="#other-platforms" class="link link-primary">4. Hosting on Other Platforms</a>
+                    <ul class="list-disc list-inside pl-5 space-y-1">
+                        <li><a href="#aws-ec2" class="link link-secondary">a. AWS EC2</a></li>
+                        <li><a href="#heroku" class="link link-secondary">b. Heroku (For Backend)</a></li>
+                        <li><a href="#firebase-hosting" class="link link-secondary">c. Firebase Hosting (For Frontend)</a></li>
+                        <li><a href="#additional-tips" class="link link-secondary">d. Additional Tips</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 1. Hosting on DigitalOcean -->
+        <section id="digitalocean" class="mb-12">
+            <img class="w-full md:w-1/2 rounded-lg shadow-lg mb-6" src="./images/digitalocean.png" alt="DigitalOcean Hosting" />
+            <h4 class="font-semibold my-4 text-2xl">1. Hosting on DigitalOcean</h4>
+            <p class="mb-4">
+                DigitalOcean provides scalable and reliable cloud hosting solutions suitable for deploying both backend and
+                frontend applications.
+            </p>
+
+            <h5 class="font-semibold my-3 text-xl">a. Setting Up a Droplet</h5>
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Create a DigitalOcean Account:</b> If you don't have one already, sign up at <a
+                        href="https://www.digitalocean.com/" target="_blank" class="link link-primary">DigitalOcean</a>.
+                </li>
+                <li>
+                    <b>Create a Droplet:</b>
+                    <ul class="list-disc list-inside pl-5 mt-2">
+                        <li>Navigate to the Droplets section and click on "Create Droplet".</li>
+                        <li>Select the <b>Ubuntu 22.04 LTS</b> as the operating system.</li>
+                        <li>Choose the appropriate plan based on your project requirements.</li>
+                        <li>Select a datacenter region closest to your target audience.</li>
+                        <li>Add your SSH keys for secure access or choose a password authentication method.</li>
+                        <li>Finalize and create the Droplet.</li>
+                    </ul>
+                </li>
+                <li>
+                    <b>Access Your Droplet:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>ssh root@your_droplet_ip</code></pre>
+                </li>
+            </ol>
+
+            <h5 class="font-semibold my-3 text-xl">b. Setting Up the Server</h5>
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Update and Upgrade Packages:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>sudo apt update && sudo apt upgrade -y</code></pre>
+                </li>
+                <li>
+                    <b>Install Node.js and NPM:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+                    </code></pre>
+                    <p class="mt-2">Verify the installation:</p>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>
+node -v
+npm -v
+                    </code></pre>
+                </li>
+                <li>
+                    <b>Install Git:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>sudo apt install git -y</code></pre>
+                </li>
+                <li>
+                    <b>Install Nginx:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>sudo apt install nginx -y</code></pre>
+                    <p class="mt-2">Start and enable Nginx:</p>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>
+sudo systemctl start nginx
+sudo systemctl enable nginx
+                    </code></pre>
+                </li>
+                <li>
+                    <b>Install PM2:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>sudo npm install pm2@latest -g</code></pre>
+                </li>
+            </ol>
+        </section>
+
+        <!-- 2. Hosting on Vercel -->
+        <section id="vercel" class="mb-12">
+            <img class="w-full md:w-1/2 rounded-lg shadow-lg mb-6" src="./images/vercel.png" alt="Vercel Hosting" />
+            <h4 class="font-semibold my-4 text-2xl">2. Hosting on Vercel</h4>
+            <p class="mb-4">
+                Vercel is a cloud platform optimized for frontend frameworks and static sites, making it an excellent choice for
+                hosting the frontend of your application. For the backend, consider using services like Heroku, DigitalOcean, or
+                AWS.
+            </p>
+
+            <h5 class="font-semibold my-3 text-xl">a. Deploying the Frontend on Vercel</h5>
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Create a Vercel Account:</b> Sign up at <a href="https://vercel.com/" target="_blank"
+                        class="link link-primary">Vercel</a>.
+                </li>
+                <li>
+                    <b>Install Vercel CLI (Optional):</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>npm install -g vercel</code></pre>
+                </li>
+                <li>
+                    <b>Clone Your Frontend Repository:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>git clone https://github.com/yourusername/rewordai-frontend.git</code></pre>
+                </li>
+                <li>
+                    <b>Navigate to the Frontend Directory:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>cd rewordai-frontend</code></pre>
+                </li>
+                <li>
+                    <b>Deploy with Vercel:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>vercel</code></pre>
+                    <p>Follow the prompts to complete the deployment. Vercel will provide a live URL for your frontend
+                        application.</p>
+                </li>
+            </ol>
+        </section>
+
+        <!-- 3. Hosting on Hostinger -->
+        <section id="hostinger" class="mb-12">
+            <img class="w-full md:w-1/2 rounded-lg shadow-lg mb-6" src="./images/hostinger.png" alt="Hostinger Hosting" />
+            <h4 class="font-semibold my-4 text-2xl">3. Hosting on Hostinger</h4>
+            <p class="mb-4">
+                Hostinger offers affordable and reliable hosting solutions suitable for both frontend and backend deployments.
+                Here's how to deploy your application on Hostinger.
+            </p>
+
+            <h5 class="font-semibold my-3 text-xl">a. Setting Up Hosting Account</h5>
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Create a Hostinger Account:</b> Sign up at <a href="https://www.hostinger.com/" target="_blank"
+                        class="link link-primary">Hostinger</a> and purchase a suitable hosting plan.
+                </li>
+                <li>
+                    <b>Access the Control Panel:</b> Log in to your Hostinger account and navigate to the control panel
+                    (hPanel).
+                </li>
+            </ol>
+
+            <h5 class="font-semibold my-3 text-xl">b. Deploying the Backend</h5>
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Set Up SSH Access:</b>
+                    <p>Enable SSH access in your Hostinger hPanel under the "SSH Access" section.</p>
+                </li>
+                <li>
+                    <b>Connect to Your Server via SSH:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>ssh your_username@your_hostinger_ip</code></pre>
+                </li>
+                <li>
+                    <b>Clone the Backend Repository:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>git clone https://github.com/yourusername/rewordai-backend.git</code></pre>
+                </li>
+                <li>
+                    <b>Navigate to the Backend Directory:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>cd rewordai-backend</code></pre>
+                </li>
+                <li>
+                    <b>Install Dependencies:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>npm install</code></pre>
+                </li>
+                <li>
+                    <b>Configure Environment Variables:</b>
+                    <p>Create a <code>.env</code> file and populate it with your environment variables as per the <a
+                            href="#backend-setup" class="link link-primary">Backend Setup</a> section.</p>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>
+DB_URL=your_mongodb_uri
+OPENAI_API_KEY=your_openai_api_key
+TOKEN_SECRET=your_token_secret
+STRIPE_SECRET_KEY=your_stripe_secret_key
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+APP_NAME=RewordAI
+SMTP_HOST=your_smtp_host
+SMTP_PORT=your_smtp_port
+SMTP_USER=your_smtp_user
+SMTP_PASS=your_smtp_pass
+                    </code></pre>
+                </li>
+                <li>
+                    <b>Start the Backend Server with PM2:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>pm2 start npm --name "rewordai-backend" -- start</code></pre>
+                    <p>Save the PM2 process list:</p>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>pm2 save</code></pre>
+                </li>
+            </ol>
+        </section>
+
+        <!-- 4. Hosting on Other Platforms -->
+        <section id="other-platforms" class="mb-12">
+            <h4 class="font-semibold my-4 text-2xl">4. Hosting on Other Platforms</h4>
+            <p class="mb-4">
+                While DigitalOcean, Vercel, and Hostinger are excellent choices, there are other platforms you can consider
+                based on your specific needs.
+            </p>
+
+            <!-- a. AWS EC2 -->
+            <h5 id="aws-ec2" class="font-semibold my-3 text-xl">a. AWS EC2</h5>
+            <img class="w-full md:w-1/2 rounded-lg shadow-lg mb-6" src="./images/other_platforms.png" alt="Other Hosting Platforms" />
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Create an AWS Account:</b> Sign up at <a href="https://aws.amazon.com/" target="_blank" class="link link-primary">AWS</a>.
+                </li>
+                <li>
+                    <b>Launch an EC2 Instance:</b>
+                    <ul class="list-disc list-inside pl-5 mt-2">
+                        <li>Select the appropriate Amazon Machine Image (AMI), such as Ubuntu Server.</li>
+                        <li>Choose an instance type based on your requirements.</li>
+                        <li>Configure instance details, add storage, and set up security groups (allow SSH, HTTP, HTTPS).</li>
+                        <li>Launch the instance and connect via SSH.</li>
+                    </ul>
+                </li>
+                <li>
+                    <b>Follow Similar Steps as DigitalOcean:</b> Install Node.js, Nginx, Git, PM2, deploy backend and frontend,
+                    configure Nginx, and secure with SSL.
+                </li>
+            </ol>
+
+            <!-- b. Heroku (For Backend) -->
+            <h5 id="heroku" class="font-semibold my-3 text-xl">b. Heroku (For Backend)</h5>
+            <img class="w-full md:w-1/2 rounded-lg shadow-lg mb-6" src="./images/heroku.png" alt="Additional Deployment Tips" />
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Create a Heroku Account:</b> Sign up at <a href="https://www.heroku.com/" target="_blank" class="link link-primary">Heroku</a>.
+                </li>
+                <li>
+                    <b>Install Heroku CLI:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>curl https://cli-assets.heroku.com/install.sh | sh</code></pre>
+                </li>
+                <li>
+                    <b>Login to Heroku:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>heroku login</code></pre>
+                </li>
+                <li>
+                    <b>Navigate to Your Backend Directory:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>cd rewordai-backend</code></pre>
+                </li>
+                <li>
+                    <b>Create a Heroku App:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>heroku create your-app-name</code></pre>
+                </li>
+                <li>
+                    <b>Set Environment Variables:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>
+heroku config:set DB_URL=your_mongodb_uri
+heroku config:set OPENAI_API_KEY=your_openai_api_key
+heroku config:set TOKEN_SECRET=your_token_secret
+heroku config:set STRIPE_SECRET_KEY=your_stripe_secret_key
+heroku config:set RAZORPAY_KEY_ID=your_razorpay_key_id
+heroku config:set RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+heroku config:set APP_NAME=RewordAI
+heroku config:set SMTP_HOST=your_smtp_host
+heroku config:set SMTP_PORT=your_smtp_port
+heroku config:set SMTP_USER=your_smtp_user
+heroku config:set SMTP_PASS=your_smtp_pass
+                    </code></pre>
+                </li>
+                <li>
+                    <b>Deploy to Heroku:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>git push heroku main</code></pre>
+                </li>
+            </ol>
+        </section>
+
+        <!-- c. Firebase Hosting (For Frontend) -->
+        <section id="firebase-hosting" class="mb-12">
+            <h5 class="font-semibold my-3 text-xl">c. Firebase Hosting (For Frontend)</h5>
+            <img class="w-full md:w-1/2 rounded-lg shadow-lg mb-6" src="./images/firebase.png" alt="Firebase Hosting" />
+            <ol class="list-decimal list-inside space-y-2 mb-6">
+                <li>
+                    <b>Create a Firebase Account:</b> Sign up at <a href="https://firebase.google.com/" target="_blank" class="link link-primary">Firebase</a>.
+                </li>
+                <li>
+                    <b>Install Firebase CLI:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>npm install -g firebase-tools</code></pre>
+                </li>
+                <li>
+                    <b>Login to Firebase:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>firebase login</code></pre>
+                </li>
+                <li>
+                    <b>Initialize Firebase in Your Project:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>firebase init</code></pre>
+                    <p>Select "Hosting" and follow the prompts to set up your project.</p>
+                </li>
+                <li>
+                    <b>Build Your Frontend Application:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>npm run build</code></pre>
+                </li>
+                <li>
+                    <b>Deploy to Firebase:</b>
+                    <pre class="bg-gray-800 text-white p-4 rounded-md"><code>firebase deploy</code></pre>
+                </li>
+            </ol>
+        </section>
+
+        <!-- d. Additional Tips -->
+        <section id="additional-tips" class="mb-12">
+            <h5 class="font-semibold my-3 text-xl">d. Additional Tips</h5>
+            <ul class="list-disc list-inside pl-5 space-y-2 mb-6">
+                <li>
+                    <b>Domain Configuration:</b> Ensure that your domain's DNS settings point to your hosting provider's
+                    servers. Update the A records accordingly.
+                </li>
+                <li>
+                    <b>Monitoring and Logs:</b> Use PM2's monitoring tools and check Nginx logs for troubleshooting any
+                    deployment issues.
+                </li>
+                <li>
+                    <b>Automated Deployments:</b> Consider setting up CI/CD pipelines using GitHub Actions or other CI tools to
+                    automate the deployment process.
+                </li>
+            </ul>
+        </section>
+
+        <p class="text-lg">
+            By following the above steps, you can successfully deploy your <b>RewordAI</b> application on your chosen
+            hosting platform. Ensure that you secure your server, keep your dependencies updated, and monitor your
+            application's performance regularly.
+        </p>
+    </div>
+</body>
+
+</html>
